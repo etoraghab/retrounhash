@@ -18,7 +18,6 @@
     .get("following")
     .map()
     .once(async (ifTrue, pub) => {
-      console.log(pub);
       if (ifTrue) {
         let user_graph = db.user(pub);
         await user_graph.get("alias").once(async (name) => {
@@ -27,12 +26,10 @@
             .map()
             .once(async (post, key) => {
               if (typeof post.content == "string") {
-                console.log(post, key);
                 if (localStorage.getItem("toxic_filter") == "true") {
                   toxicity.load(threshold).then((model) => {
                     const sentences = [post.content];
                     model.classify(sentences).then((predictions) => {
-                      console.log(predictions);
                       if (predictions[6].results[0].match !== true) {
                         posts = [
                           {

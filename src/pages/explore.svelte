@@ -1,20 +1,15 @@
 <script>
   import { SEA } from "gun";
 
-  console.log("explore");
-
   import Post from "../components/post.svelte";
   import { db } from "../lib/gun";
   let posts = [];
   db.get("#" + prompt("hashtag:"))
     .map()
     .once((soul, b) => {
-      console.log(soul, b);
       db.get(soul).once(async (a) => {
-        console.log(a);
         if (Object.hasOwn(a || {}, "pub") && Object.hasOwn(a || {}, "sign")) {
           let signed = await SEA.verify(a.sign, a.pub);
-          console.log("signed: ", signed);
           if (signed === a.content) {
             db.user(a.pub)
               .get("alias")

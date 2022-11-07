@@ -31,12 +31,10 @@
       .map()
       .once(async (post, key) => {
         if (typeof post.content == "string") {
-          console.log(post, key);
           if (localStorage.getItem("toxic_filter") == "true") {
             toxicity.load(0.9).then((model) => {
               const sentences = [post.content];
               model.classify(sentences).then((predictions) => {
-                console.log(predictions);
                 if (predictions[6].results[0].match !== true) {
                   posts = [
                     {

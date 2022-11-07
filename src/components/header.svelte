@@ -130,13 +130,7 @@
           <div class="font-mono text-sm mt-auto mb-auto ml-3">
             <!-- svelte-ignore missing-declaration -->
             <!-- svelte-ignore a11y-click-events-have-key-events -->
-            <Clipboard
-              text={pub}
-              let:copy
-              on:copy={() => {
-                console.log("copied");
-              }}
-            >
+            <Clipboard text={pub} let:copy on:copy={() => {}}>
               <div on:click={copy} class="cursor-pointer m-auto">
                 <span class="m-auto">
                   @{$username || "loading"}
@@ -173,13 +167,7 @@
             <Edit width="1.2em" />
           </div>
         {:else if $location.includes("/u/")}
-          <Clipboard
-            text={window.location.href}
-            let:copy
-            on:copy={() => {
-              console.log("copied");
-            }}
-          >
+          <Clipboard text={window.location.href} let:copy on:copy={() => {}}>
             <!-- svelte-ignore a11y-click-events-have-key-events -->
             <div
               on:click={copy}

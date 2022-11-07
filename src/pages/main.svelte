@@ -8,13 +8,11 @@
   let password;
 
   let user_ = user.is;
-  console.log(user_);
   if (user_) {
     push("/home");
   }
   if (localStorage.getItem("keys") && !user_) {
     user.auth(JSON.parse(localStorage.getItem("keys")), function (res) {
-      console.log("loggedin auto");
       push("/home");
     });
   }
@@ -58,7 +56,6 @@
                   });
                 } else {
                   user_ = db.user()._.sea;
-                  console.log(user_);
                 }
               });
             } else {
