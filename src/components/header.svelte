@@ -15,6 +15,7 @@
   } from "@svicons/boxicons-regular";
   import { reveal } from "svelte-reveal";
   import { v4 } from "uuid";
+  import { SEA } from "gun";
 
   if (!user.is) {
     push("/");
@@ -36,11 +37,21 @@
   }
 
   let postContent;
-  function postThoughts() {
-    user.get("posts").get(v4()).put({
-      date: new Date().toUTCString(),
-      content: postContent,
-    });
+  async function postThoughts() {
+    user
+      .get("posts")
+      .get(v4())
+      .put({
+        date: new Date().toUTCString(),
+        content: postContent,
+        sign: await SEA.sign(postContent, $keys),
+        pub: $keys.pub,
+      })
+      .on(async (data) => {
+        let soul = Gun.node.soul(data);
+        let hash = await SEA.work(soul, null, null, { name: "SHA-256" });
+        db.get("#global").get(hash).put(soul);
+      });
     postContent = null;
     writePost();
   }

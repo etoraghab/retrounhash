@@ -12,8 +12,8 @@
   if (user_) {
     push("/home");
   }
-  if (localStorage.getItem("$keys") && !user_) {
-    user.auth(JSON.parse(localStorage.getItem("$keys")), function (res) {
+  if (localStorage.getItem("keys") && !user_) {
+    user.auth(JSON.parse(localStorage.getItem("keys")), function (res) {
       console.log("loggedin auto");
       push("/home");
     });
@@ -63,7 +63,7 @@
               });
             } else {
               user.auth(username, password, function (res) {
-                localStorage.setItem("$keys", JSON.stringify(user._.sea));
+                localStorage.setItem("keys", JSON.stringify(user._.sea));
                 push("/home");
               });
             }

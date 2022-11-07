@@ -8,7 +8,6 @@ export const db = GUN({
   localStorage: false,
 });
 
-// Gun User
 export const user = db.user().recall({ sessionStorage: true });
 export const username = writable()
 export const keys = writable({

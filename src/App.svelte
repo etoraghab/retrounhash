@@ -5,6 +5,7 @@
   import Home from "./pages/home.svelte";
   import Header from "./components/header.svelte";
   import Account from "./pages/account.svelte";
+  import Explore from "./pages/explore.svelte";
   /**
    * theme management
    */
@@ -22,5 +23,6 @@
     "/": Main,
     "/home": Home,
     "/u/:pub": Account,
+    "/explore": Explore,
   }}
 />

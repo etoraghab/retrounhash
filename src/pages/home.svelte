@@ -2,6 +2,13 @@
   import GUN from "gun";
   import Post from "../components/post.svelte";
   import { db, keys, user } from "../lib/gun";
+  require("@tensorflow/tfjs");
+  const toxicity = require("@tensorflow-models/toxicity");
+
+  const threshold = 0.9;
+
+  // Load the model. Users optionally pass in a threshold and an array of
+  // labels to include
 
   let posts = [];
 
@@ -21,16 +28,37 @@
             .once(async (post, key) => {
               if (typeof post.content == "string") {
                 console.log(post, key);
-                posts = [
-                  {
-                    avatar: `https://avatars.dicebear.com/api/initials/${name}.svg`,
-                    content: post.content,
-                    date: new Date(post.date).toDateString(),
-                    username: name,
-                    pub: pub,
-                  },
-                  ...posts,
-                ];
+                if (localStorage.getItem("toxic_filter") == true) {
+                  toxicity.load(threshold).then((model) => {
+                    const sentences = [post.content];
+                    model.classify(sentences).then((predictions) => {
+                      console.log(predictions);
+                      if (predictions[6].results[0].match !== true) {
+                        posts = [
+                          {
+                            avatar: `https://avatars.dicebear.com/api/initials/${name}.svg`,
+                            content: post.content,
+                            date: new Date(post.date).toDateString(),
+                            username: name,
+                            pub: pub,
+                          },
+                          ...posts,
+                        ];
+                      }
+                    });
+                  });
+                } else {
+                  posts = [
+                    {
+                      avatar: `https://avatars.dicebear.com/api/initials/${name}.svg`,
+                      content: post.content,
+                      date: new Date(post.date).toDateString(),
+                      username: name,
+                      pub: pub,
+                    },
+                    ...posts,
+                  ];
+                }
               }
             });
         });
