@@ -5,7 +5,7 @@
 
   let posts = [];
 
-  user.get("following").get(keys.pub).put(true);
+  user.get("following").get($keys.pub).put(true);
 
   user
     .get("following")
@@ -27,7 +27,7 @@
                     content: post.content,
                     date: new Date(post.date).toDateString(),
                     username: name,
-                    pub: pub
+                    pub: pub,
                   },
                   ...posts,
                 ];
@@ -39,7 +39,7 @@
 </script>
 
 <div class="p-3">
-  <div class="flex flex-col gap-3">
+  <div class="flex justify-center items-center flex-col gap-3">
     {#each posts as p}
       <Post data={p} />
     {/each}

@@ -3,7 +3,7 @@
   export let data;
 </script>
 
-<div class="bg-white bg-opacity-6 p-2 rounded-xl flex gap-2">
+<div class="bg-white bg-opacity-6 p-2 w-full md:w-1/2 lg:w-1/3 rounded-xl flex gap-2">
   <!-- svelte-ignore a11y-click-events-have-key-events -->
   <img
     on:click={() => {

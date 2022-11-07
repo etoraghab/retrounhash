@@ -11,9 +11,12 @@ export const db = GUN({
 // Gun User
 export const user = db.user().recall({ sessionStorage: true });
 export const username = writable()
-export const keys = user._.sea
+export const keys = writable({
+  pub: ""
+})
 db.on("auth", () => {
   user.get("alias").once((name) => {
     username.set(name)
   })
+  keys.set(user._.sea)
 })
