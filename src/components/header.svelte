@@ -48,11 +48,12 @@
         sign: await SEA.sign(postContent, $keys),
         pub: $keys.pub,
       })
-      .on(async (data) => {
-        Array(hashtags).forEach(async (tag) => {
+      .once(async (data) => {
+        hashtags.forEach(async (tag) => {
+          console.log('ok');
           let soul = Gun.node.soul(data);
           let hash = await SEA.work(soul, null, null, { name: "SHA-256" });
-          db.get(tag).get(hash).put(soul);
+          await db.get(tag).get(hash).put(soul);
         });
       });
     postContent = null;
