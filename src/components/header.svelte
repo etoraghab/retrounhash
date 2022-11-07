@@ -38,6 +38,7 @@
 
   let postContent;
   async function postThoughts() {
+    let hashtags = postContent.match(/#[a-z0-9_]+/g);
     user
       .get("posts")
       .get(v4())
@@ -48,9 +49,11 @@
         pub: $keys.pub,
       })
       .on(async (data) => {
-        let soul = Gun.node.soul(data);
-        let hash = await SEA.work(soul, null, null, { name: "SHA-256" });
-        db.get("#global").get(hash).put(soul);
+        hashtags.forEach(async (tag) => {
+          let soul = Gun.node.soul(data);
+          let hash = await SEA.work(soul, null, null, { name: "SHA-256" });
+          db.get(tag).get(hash).put(soul);
+        });
       });
     postContent = null;
     writePost();

@@ -28,7 +28,7 @@
             .once(async (post, key) => {
               if (typeof post.content == "string") {
                 console.log(post, key);
-                if (localStorage.getItem("toxic_filter") == true) {
+                if (localStorage.getItem("toxic_filter") == "true") {
                   toxicity.load(threshold).then((model) => {
                     const sentences = [post.content];
                     model.classify(sentences).then((predictions) => {
