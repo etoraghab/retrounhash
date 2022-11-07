@@ -69,14 +69,5 @@
     {#each posts as p}
       <Post data={p} />
     {/each}
-    {#if posts.length == 0}
-      <hr />
-      <div class="p-2">
-        <div class="text-xl">
-          other posts
-        </div>
-        <Explore tag="global" />
-      </div>
-    {/if}
   </div>
 </div>
