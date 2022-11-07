@@ -1,10 +1,10 @@
 <script>
   import { SEA } from "gun";
-
+  export let tag;
   import Post from "../components/post.svelte";
   import { db } from "../lib/gun";
   let posts = [];
-  db.get("#" + prompt("hashtag:"))
+  db.get("#" + tag || "global")
     .map()
     .once((soul, b) => {
       db.get(soul).once(async (a) => {

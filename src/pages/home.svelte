@@ -2,6 +2,7 @@
   import GUN from "gun";
   import Post from "../components/post.svelte";
   import { db, keys, user } from "../lib/gun";
+  import Explore from "./explore.svelte";
   require("@tensorflow/tfjs");
   const toxicity = require("@tensorflow-models/toxicity");
 
@@ -68,5 +69,14 @@
     {#each posts as p}
       <Post data={p} />
     {/each}
+    {#if posts.length == 0}
+      <hr />
+      <div class="p-2">
+        <div class="text-xl">
+          other posts
+        </div>
+        <Explore tag="global" />
+      </div>
+    {/if}
   </div>
 </div>
