@@ -6,7 +6,7 @@
   import Post from "../components/post.svelte";
   import { db } from "../lib/gun";
   let posts = [];
-  db.get("#global")
+  db.get("#" + prompt("hashtag:"))
     .map()
     .once((soul, b) => {
       console.log(soul, b);

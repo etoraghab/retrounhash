@@ -2,6 +2,8 @@
   import Post from "../components/post.svelte";
   import { db, keys, user } from "../lib/gun";
   import { location } from "svelte-spa-router";
+  require("@tensorflow/tfjs");
+  const toxicity = require("@tensorflow-models/toxicity");
 
   export let params;
   const pub = params.pub;
@@ -30,16 +32,37 @@
       .once(async (post, key) => {
         if (typeof post.content == "string") {
           console.log(post, key);
-          posts = [
-            {
-              avatar: `https://avatars.dicebear.com/api/initials/${name}.svg`,
-              content: post.content,
-              date: new Date(post.date).toDateString(),
-              username: name,
-              pub: pub,
-            },
-            ...posts,
-          ];
+          if (localStorage.getItem("toxic_filter") == "true") {
+            toxicity.load(0.9).then((model) => {
+              const sentences = [post.content];
+              model.classify(sentences).then((predictions) => {
+                console.log(predictions);
+                if (predictions[6].results[0].match !== true) {
+                  posts = [
+                    {
+                      avatar: `https://avatars.dicebear.com/api/initials/${name}.svg`,
+                      content: post.content,
+                      date: new Date(post.date).toDateString(),
+                      username: name,
+                      pub: pub,
+                    },
+                    ...posts,
+                  ];
+                }
+              });
+            });
+          } else {
+            posts = [
+              {
+                avatar: `https://avatars.dicebear.com/api/initials/${name}.svg`,
+                content: post.content,
+                date: new Date(post.date).toDateString(),
+                username: name,
+                pub: pub,
+              },
+              ...posts,
+            ];
+          }
         }
       });
   });
@@ -94,7 +117,7 @@
       {/if}
     </div>
     <div class="text-xs m-2 p-2">
-      {user_bio || "loading"}
+      {user_bio || "404 bio not found"}
     </div>
   </div>
   <hr />
