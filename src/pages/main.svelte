@@ -31,7 +31,7 @@
       placeholder="username"
       type="text"
       bind:value={username}
-      class="input input-sm border-blue-400"
+      class="input input-sm"
     />
     <div class="flex flex-col gap-3">
       <input
@@ -39,7 +39,7 @@
         placeholder="password"
         type="password"
         bind:value={password}
-        class="input input-sm border-blue-400"
+        class="input input-sm"
       />
       <button
         use:reveal={{ transition: "blur", delay: 1000 }}

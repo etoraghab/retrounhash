@@ -118,7 +118,7 @@
             on:click={() => {
               following_graph.put(true);
             }}
-            class="btn btn-wide btn-xs bg-blue-600 hover:bg-blue-500 text-white border border-gray-300"
+            class="btn btn-wide btn-xs bg-blue-600 hover:bg-blue-500 text-white border"
           >
             follow
           </button>
@@ -127,7 +127,7 @@
             on:click={() => {
               following_graph.put(false);
             }}
-            class="btn btn-wide btn-xs btn-ghost border border-gray-300"
+            class="btn btn-wide btn-xs btn-ghost"
           >
             unfollow
           </button>

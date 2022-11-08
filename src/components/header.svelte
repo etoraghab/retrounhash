@@ -34,6 +34,7 @@
       border_header = 50;
       height_header = 0;
     } else {
+      settingsOpen = false;
       border_header = 10;
       height_header = 24;
       writeMode = true;
@@ -109,6 +110,7 @@
       border_header = 50;
       height_header = 0;
     } else {
+      writeMode = false  //open settings after closing writeMode
       border_header = 10;
       height_header = 30;
       settingsOpen = true;
@@ -139,8 +141,7 @@
     height_header = 0;
 
     writeMode = false;
-    border_header = 50;
-    height_header = 0;
+    openSettings();
   });
 
   let searchQuery;
@@ -150,14 +151,14 @@
   <div class="w-full md:w-1/2 lg:w-1/3 m-auto h-0 fixed gap-2 z-3">
     <div
       class={writeMode || profileEditMode || settingsOpen == true
-        ? "bg-white bg-opacity-80 backdrop-blur-sm"
+        ? "bg-base-100 bg-opacity-80 backdrop-blur-sm"
         : ""}
       style="transition:all .5s;height: {height_header}rem;display: flex;flex-direction: column;margin: 0.75rem;border-radius: {border_header}px;backdrop-blur: blur(4px);"
     >
       <div
         class=" p-2 flex transition-all duration-400 backdrop-blur-sm rounded-full 
         {writeMode || profileEditMode || settingsOpen == false
-          ? 'bg-white'
+          ? 'bg-base-100'
           : ''} bg-opacity-80"
       >
         {#if $location.includes("/search") || $location.includes("/explore")}
@@ -171,13 +172,15 @@
             on:click={() => {
               push(`/search/${searchQuery}`);
             }}
-            class="m-auto mr-1 p-0.5 rounded-full bg-white bg-opacity-10"
+            class="m-auto mr-1 p-0.5 rounded-full bg-base-100 bg-opacity-10"
           >
             <Search width="1.2em" />
           </button>
         {:else}
-          <div class="m-auto ml-1 p-1 rounded-full bg-white bg-opacity-10">
-            <button on:click={openSettings}>
+          <div
+            class="m-auto flex ml-1 p-1 rounded-full bg-base-100 bg-opacity-10"
+          >
+            <button class="m-auto" on:click={openSettings}>
               <Cog width="1.2em" />
             </button>
           </div>
@@ -195,7 +198,7 @@
           <div
             on:keypress={writePost}
             on:click={writePost}
-            class="m-auto mr-1 p-1 rounded-full bg-white bg-opacity-10"
+            class="m-auto mr-1 p-1 rounded-full bg-base-100 bg-opacity-10"
           >
             <Pencil width="1.2em" />
           </div>
@@ -204,7 +207,7 @@
           <div
             on:keypress={editProfile}
             on:click={editProfile}
-            class="m-auto mr-1 p-1 rounded-full bg-white bg-opacity-10"
+            class="m-auto mr-1 p-1 rounded-full bg-base-100 bg-opacity-10"
           >
             <Edit width="1.2em" />
           </div>
@@ -213,7 +216,7 @@
             <!-- svelte-ignore a11y-click-events-have-key-events -->
             <div
               on:click={copy}
-              class="m-auto mr-1 p-1 rounded-full bg-white bg-opacity-10"
+              class="m-auto mr-1 p-1 rounded-full bg-base-100 bg-opacity-10"
             >
               <ShareAlt width="1.2em" />
             </div>
@@ -225,14 +228,11 @@
           <div class="p-2">
             <div class="p-2">
               <textarea
-                class="w-full border border-gray-300 bg-white bg-opacity-80 rounded-lg border-opacity-75 p-2"
+                class="w-full bg-base-100 bg-opacity-80 rounded-lg p-2"
                 placeholder="place your thoughts.."
                 bind:value={postContent}
               />
-              <button
-                on:click={postThoughts}
-                class="btn btn-xs btn-ghost border border-gray-300"
-              >
+              <button on:click={postThoughts} class="btn btn-xs btn-ghost">
                 post
               </button>
             </div>
@@ -253,21 +253,18 @@
                   type="text"
                   placeholder="display name"
                   bind:value={user_display_input}
-                  class="w-full border border-gray-300 bg-white bg-opacity-80 rounded-lg border-opacity-75 p-2"
+                  class="w-full bg-base-100 bg-opacity-80 rounded-lg p-2"
                 />
               </div>
               <div class="capitalize text-sm">bio</div>
               <div>
                 <textarea
-                  class="w-full border border-gray-300 bg-white bg-opacity-80 rounded-lg border-opacity-75 p-2"
+                  class="w-full bg-base-100 bg-opacity-80 rounded-lg p-2"
                   placeholder="your bio goes here.."
                   bind:value={user_bio_input}
                 />
               </div>
-              <button
-                on:click={saveUserInfo}
-                class="btn btn-xs btn-ghost border border-gray-300"
-              >
+              <button on:click={saveUserInfo} class="btn btn-xs btn-ghost">
                 save
               </button>
             </div>
@@ -281,24 +278,24 @@
 <div class="flex justify-center items-center w-full">
   <div class="w-full md:w-1/4 h-auto fixed bottom-0 gap-2 ">
     <div
-      class="m-2 p-1 flex backdrop-blur-sm rounded-full bg-white bg-opacity-80 border-2 border-white border-opacity-25"
+      class="m-2 p-1 flex backdrop-blur-sm rounded-full bg-base-100 bg-opacity-80"
     >
-      <div class="m-auto p-1 rounded-full bg-white bg-opacity-10">
+      <div class="m-auto p-1 rounded-full bg-base-100 bg-opacity-10">
         <a use:link href="/home">
           <Home width="1.5em" />
         </a>
       </div>
-      <div class="m-auto p-1 rounded-full bg-white bg-opacity-10">
+      <div class="m-auto p-1 rounded-full bg-base-100 bg-opacity-10">
         <a use:link href="/explore">
           <Compass width="1.5em" />
         </a>
       </div>
-      <div class="m-auto p-1 rounded-full bg-white bg-opacity-10">
+      <div class="m-auto p-1 rounded-full bg-base-100 bg-opacity-10">
         <a use:link href="/friends">
           <Group width="1.5em" />
         </a>
       </div>
-      <div class="m-auto p-1 rounded-full bg-white bg-opacity-10">
+      <div class="m-auto p-1 rounded-full bg-base-100 bg-opacity-10">
         <a use:link href={`/u/${$keys.pub}`}>
           <User width="1.5em" />
         </a>
