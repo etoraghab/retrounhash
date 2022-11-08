@@ -20,6 +20,8 @@
   import { v4 } from "uuid";
   import { SEA } from "gun";
   import Settings from "./settings.svelte";
+  import { onMount } from "svelte";
+  import { prevent_default } from "svelte/internal";
 
   if (!user.is) {
     push("/");
@@ -104,13 +106,13 @@
   }
 
   let settingsOpen = false;
-  function openSettings() {
+  function openSettings(action) {
     if (settingsOpen) {
       settingsOpen = false;
       border_header = 50;
       height_header = 0;
     } else {
-      writeMode = false  //open settings after closing writeMode
+      writeMode = false; //open settings after closing writeMode
       border_header = 10;
       height_header = 30;
       settingsOpen = true;
@@ -135,16 +137,34 @@
     user_bio_input = name;
   });
 
-  location.subscribe(() => {
+  function closeEverything() {
     profileEditMode = false;
     border_header = 50;
     height_header = 0;
 
     writeMode = false;
-    openSettings();
+    settingsOpen = false;
+  }
+
+  location.subscribe(() => {
+    closeEverything();
   });
 
   let searchQuery;
+  let searchElm;
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key == "Escape") {
+      closeEverything();
+    } else if (e.ctrlKey == true && e.key == "/") {
+      e.preventDefault();
+      push("/search");
+      searchQuery = null;
+      setTimeout(() => {
+        searchElm.focus();
+      }, 1000);
+    }
+  });
 </script>
 
 <div class="flex justify-center items-center w-full">
@@ -164,6 +184,8 @@
         {#if $location.includes("/search") || $location.includes("/explore")}
           <input
             type="text"
+            id="search"
+            bind:this={searchElm}
             class="w-full bg-transparent pl-3 text-sm rounded-full p-1"
             placeholder="search among hashtags, posts"
             bind:value={searchQuery}

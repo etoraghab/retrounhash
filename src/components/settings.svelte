@@ -1,4 +1,5 @@
 <script>
+  import { toast } from "../components/toast";
   import { user } from "../lib/gun";
   import { reveal } from "svelte-reveal";
   let toxic_filter, dark_mode;
@@ -18,6 +19,7 @@
   });
 </script>
 
+<!-- svelte-ignore non-top-level-reactive-declaration -->
 <div use:reveal>
   <div class="p-2">
     <div class="p-2">
@@ -30,6 +32,7 @@
             bind:checked={toxic_filter}
             class="toggle toggle-xs m-auto mr-1"
             on:change={() => {
+              toast("success", "saved");
               settings.get("toxic_filter").put(toxic_filter);
             }}
           />
@@ -41,6 +44,7 @@
             bind:checked={dark_mode}
             class="toggle toggle-xs m-auto mr-1"
             on:change={() => {
+              toast("success", "saved");
               settings.get("dark_mode").put(dark_mode);
             }}
           />

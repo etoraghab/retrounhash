@@ -9,6 +9,7 @@
   import SearchRenderer from "./pages/searchRenderer.svelte";
   import { user } from "./lib/gun";
   import { onMount } from "svelte";
+  import Toast from "./components/toast.svelte";
   /**
    * theme management
    */
@@ -25,6 +26,7 @@
   });
 </script>
 
+<Toast />
 <div>
   {#if $location !== "/"}
     <Header />

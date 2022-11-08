@@ -1,8 +1,8 @@
 <script>
   import { db, keys, user } from "../lib/gun";
-  import { toast } from "../lib/alert";
   import { reveal } from "svelte-reveal";
   import { push } from "svelte-spa-router";
+  import { toast } from "../components/toast";
 
   let username;
   let password;
@@ -11,7 +11,7 @@
   if (user_) {
     push("/home");
   }
-  if (localStorage.getItem("keys") && !user_) {
+  if (localStorage.getItem("keys") && Object.hasOwn(!user_, "pub")) {
     user.auth(JSON.parse(localStorage.getItem("keys")), function (res) {
       push("/home");
     });
@@ -31,7 +31,7 @@
       placeholder="username"
       type="text"
       bind:value={username}
-      class="input input-sm"
+      class="input input-sm border-blue-700 border-opacity-80"
     />
     <div class="flex flex-col gap-3">
       <input
@@ -39,7 +39,7 @@
         placeholder="password"
         type="password"
         bind:value={password}
-        class="input input-sm"
+        class="input input-sm border-blue-700 border-opacity-80"
       />
       <button
         use:reveal={{ transition: "blur", delay: 1000 }}
@@ -48,18 +48,14 @@
             if (res.err == "User already created!") {
               user.auth(username, password, function (res) {
                 if (res.err == "Wrong user or password.") {
-                  toast.fire({
-                    title: "wrong username or password",
-                    timer: 3000,
-                    icon: "error",
-                    showCloseButton: true,
-                  });
+                  toast("error", "wrong username/pass");
                 } else {
                   user_ = db.user()._.sea;
                 }
               });
             } else {
               user.auth(username, password, function (res) {
+                toast("success");
                 localStorage.setItem("keys", JSON.stringify(user._.sea));
                 push("/home");
               });
