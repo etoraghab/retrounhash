@@ -1,4 +1,6 @@
 <script>
+  import moment from "moment";
+  moment().format();
   import { push, link, location } from "svelte-spa-router";
   import { db, keys, user, username } from "../lib/gun";
   import Clipboard from "svelte-clipboard";
@@ -38,25 +40,45 @@
 
   let postContent;
   async function postThoughts() {
+    if (!postContent) {
+      return;
+    }
     let hashtags = postContent.match(/#[a-z0-9_]+/g) || [];
     user
       .get("posts")
       .get(v4())
       .put({
-        date: new Date().toUTCString(),
+        date: String(moment().toString()),
         content: postContent,
         sign: await SEA.sign(postContent, $keys),
         pub: $keys.pub,
       })
       .once(async (data) => {
         hashtags.forEach(async (tag) => {
-          console.log('ok');
           let soul = Gun.node.soul(data);
           let hash = await SEA.work(soul, null, null, { name: "SHA-256" });
           await db.get(tag).get(hash).put(soul);
         });
+
+        let array1 = Array(postContent.split(" "));
+        for (let index = 0; index < array1[0].length; index++) {
+          const element = array1[0][index];
+          if (String(element).length < 2) {
+            return;
+          }
+          let soul = Gun.node.soul(data);
+          let hash = await SEA.work(soul, null, null, { name: "SHA-256" });
+          await db
+            .get("search")
+            .get("query")
+            .get(`#${element}`)
+            .get(hash)
+            .put(soul);
+        }
+
+        postContent = null;
       });
-    postContent = null;
+
     writePost();
   }
 
@@ -105,6 +127,8 @@
     border_header = 50;
     height_header = 0;
   });
+
+  let searchQuery;
 </script>
 
 <div class="flex justify-center items-center w-full">
@@ -119,7 +143,22 @@
         class=" p-2 flex transition-all duration-400 backdrop-blur-sm rounded-full 
         {writeMode || profileEditMode == false ? 'bg-white' : ''} bg-opacity-80"
       >
-        {#if $location !== `/explore`}
+        {#if $location.includes("/search") || $location.includes("/explore")}
+          <input
+            type="text"
+            class="w-full bg-transparent pl-3 text-sm rounded-full p-1"
+            placeholder="search among hashtags, posts"
+            bind:value={searchQuery}
+          />
+          <button
+            on:click={() => {
+              push(`/search/${searchQuery}`);
+            }}
+            class="m-auto mr-1 p-0.5 rounded-full bg-white bg-opacity-10"
+          >
+            <Search width="1.2em" />
+          </button>
+        {:else}
           <button
             class="font-mono text-xl m-auto ml-3 mr-0 mb-auto cursor-pointer"
             on:click={() => {
@@ -139,15 +178,6 @@
               </div>
             </Clipboard>
           </div>
-        {:else}
-          <input
-            type="text"
-            class="w-full bg-transparent pl-3 text-sm rounded-full p-1"
-            placeholder="search"
-          />
-          <button class="m-auto mr-1 p-0.5 rounded-full bg-white bg-opacity-10">
-            <Search width="1.2em" />
-          </button>
         {/if}
 
         {#if $location == "/home"}
@@ -159,7 +189,7 @@
             <Pencil width="1.2em" />
           </div>
         {/if}
-        {#if $location == `/u/${user.is.pub}`}
+        {#if $location == `/u/${$keys.pub}`}
           <div
             on:keypress={editProfile}
             on:click={editProfile}

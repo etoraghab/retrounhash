@@ -4,8 +4,9 @@
   import Main from "./pages/main.svelte";
   import Home from "./pages/home.svelte";
   import Header from "./components/header.svelte";
-  import Account from "./pages/account.svelte";
   import Explore from "./pages/explore.svelte";
+  import AccountRender from "./pages/accountRender.svelte";
+  import SearchRenderer from "./pages/searchRenderer.svelte";
   /**
    * theme management
    */
@@ -22,7 +23,8 @@
   routes={{
     "/": Main,
     "/home": Home,
-    "/u/:pub": Account,
-    "/explore": Explore,
+    "/u/:pub": AccountRender,
+    "/search/:query": SearchRenderer,
+    "/explore/:tag": Explore,
   }}
 />

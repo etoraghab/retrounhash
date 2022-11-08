@@ -1,8 +1,6 @@
 <script>
-  import GUN from "gun";
   import Post from "../components/post.svelte";
   import { db, keys, user } from "../lib/gun";
-  import Explore from "./explore.svelte";
   require("@tensorflow/tfjs");
   const toxicity = require("@tensorflow-models/toxicity");
 
@@ -32,36 +30,56 @@
                     const sentences = [post.content];
                     model.classify(sentences).then((predictions) => {
                       if (predictions[6].results[0].match !== true) {
-                        posts = [
-                          {
-                            avatar: `https://avatars.dicebear.com/api/initials/${name}.svg`,
-                            content: post.content,
-                            date: new Date(post.date).toDateString(),
-                            username: name,
-                            pub: pub,
-                          },
-                          ...posts,
-                        ];
+                        if (Object.hasOwn(post, "content")) {
+                          posts = [
+                            {
+                              avatar: `https://avatars.dicebear.com/api/initials/${name}.svg`,
+                              content: post.content,
+                              date: post.date,
+                              username: name,
+                              pub: pub,
+                              time: post.time,
+                            },
+                            ...posts,
+                          ];
+                        }
                       }
                     });
                   });
                 } else {
-                  posts = [
-                    {
-                      avatar: `https://avatars.dicebear.com/api/initials/${name}.svg`,
-                      content: post.content,
-                      date: new Date(post.date).toDateString(),
-                      username: name,
-                      pub: pub,
-                    },
-                    ...posts,
-                  ];
+                  if (Object.hasOwn(post, "content")) {
+                    posts = [
+                      {
+                        avatar: `https://avatars.dicebear.com/api/initials/${name}.svg`,
+                        content: post.content,
+                        date: post.date,
+                        username: name,
+                        pub: pub,
+                        time: post.time,
+                      },
+                      ...posts,
+                    ];
+                  }
                 }
               }
             });
         });
       }
     });
+
+  function sortEm() {
+    posts.forEach((p) => {
+      console.log(p.time);
+    });
+    posts.sort(
+      (d1, d2) => new Date(d2.date).getTime() - new Date(d1.date).getTime()
+    );
+    console.log(posts);
+  }
+
+  $: posts, sortEm();
+
+  //user.get("posts").put(null)
 </script>
 
 <div class="p-3">

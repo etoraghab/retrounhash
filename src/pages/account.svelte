@@ -36,30 +36,34 @@
               const sentences = [post.content];
               model.classify(sentences).then((predictions) => {
                 if (predictions[6].results[0].match !== true) {
-                  posts = [
-                    {
-                      avatar: `https://avatars.dicebear.com/api/initials/${name}.svg`,
-                      content: post.content,
-                      date: new Date(post.date).toDateString(),
-                      username: name,
-                      pub: pub,
-                    },
-                    ...posts,
-                  ];
+                  if (Object.hasOwn(post, "content")) {
+                    posts = [
+                      {
+                        avatar: `https://avatars.dicebear.com/api/initials/${name}.svg`,
+                        content: post.content,
+                        date: new Date(post.date).toDateString(),
+                        username: name,
+                        pub: pub,
+                      },
+                      ...posts,
+                    ];
+                  }
                 }
               });
             });
           } else {
-            posts = [
-              {
-                avatar: `https://avatars.dicebear.com/api/initials/${name}.svg`,
-                content: post.content,
-                date: new Date(post.date).toDateString(),
-                username: name,
-                pub: pub,
-              },
-              ...posts,
-            ];
+            if (Object.hasOwn(post, "content")) {
+              posts = [
+                {
+                  avatar: `https://avatars.dicebear.com/api/initials/${name}.svg`,
+                  content: post.content,
+                  date: new Date(post.date).toDateString(),
+                  username: name,
+                  pub: pub,
+                },
+                ...posts,
+              ];
+            }
           }
         }
       });
