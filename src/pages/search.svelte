@@ -23,7 +23,7 @@
                     {
                       avatar: `https://avatars.dicebear.com/api/initials/${name}.svg`,
                       content: a.content,
-                      date: new Date(a.date).toDateString(),
+                      date: Gun.state.is(a, "content"),
                       username: name,
                       pub: a.pub,
                     },
@@ -42,6 +42,9 @@
         a.findIndex((v2) => JSON.stringify(v2) === JSON.stringify(v)) === i
     );
     posts = a;
+    posts.sort(
+      (d1, d2) => new Date(d2.date).getTime() - new Date(d1.date).getTime()
+    );
   }
 
   $: posts, removeDUP();
@@ -57,3 +60,7 @@
     {/each}
   </div>
 </div>
+<hr />
+<br />
+<br />
+<br />

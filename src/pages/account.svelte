@@ -57,7 +57,7 @@
                 {
                   avatar: `https://avatars.dicebear.com/api/initials/${name}.svg`,
                   content: post.content,
-                  date: new Date(post.date).toDateString(),
+                  date: Gun.state.is(post, "content"),
                   username: name,
                   pub: pub,
                 },
@@ -74,6 +74,14 @@
   following_graph.on((val) => {
     isFollowed = val;
   });
+
+  function sortEm() {
+    posts.sort(
+      (d1, d2) => new Date(d2.date).getTime() - new Date(d1.date).getTime()
+    );
+  }
+
+  $: posts, sortEm();
 </script>
 
 <div class="flex justify-center items-center">
@@ -131,3 +139,7 @@
     {/each}
   </div>
 </div>
+<hr />
+<br />
+<br />
+<br />

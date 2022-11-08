@@ -35,10 +35,9 @@
                             {
                               avatar: `https://avatars.dicebear.com/api/initials/${name}.svg`,
                               content: post.content,
-                              date: post.date,
+                              date: Gun.state.is(post, "content"),
                               username: name,
                               pub: pub,
-                              time: post.time,
                             },
                             ...posts,
                           ];
@@ -52,10 +51,9 @@
                       {
                         avatar: `https://avatars.dicebear.com/api/initials/${name}.svg`,
                         content: post.content,
-                        date: post.date,
+                        date: Gun.state.is(post, "content"),
                         username: name,
                         pub: pub,
-                        time: post.time,
                       },
                       ...posts,
                     ];
@@ -68,13 +66,9 @@
     });
 
   function sortEm() {
-    posts.forEach((p) => {
-      console.log(p.time);
-    });
     posts.sort(
       (d1, d2) => new Date(d2.date).getTime() - new Date(d1.date).getTime()
     );
-    console.log(posts);
   }
 
   $: posts, sortEm();
@@ -89,3 +83,8 @@
     {/each}
   </div>
 </div>
+
+<hr />
+<br />
+<br />
+<br />
