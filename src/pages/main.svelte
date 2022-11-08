@@ -41,31 +41,34 @@
         bind:value={password}
         class="input input-sm border-blue-700 border-opacity-80"
       />
-      <button
-        use:reveal={{ transition: "blur", delay: 1000 }}
-        on:click={() => {
-          user.create(username, password, function (res) {
-            if (res.err == "User already created!") {
-              user.auth(username, password, function (res) {
-                if (res.err == "Wrong user or password.") {
-                  toast("error", "wrong username/pass");
-                } else {
-                  user_ = db.user()._.sea;
-                }
-              });
-            } else {
-              user.auth(username, password, function (res) {
-                toast("success");
-                localStorage.setItem("keys", JSON.stringify(user._.sea));
-                push("/home");
-              });
-            }
-          });
-        }}
-        class="btn w-fit btn-sm"
-      >
-        go
-      </button>
+
+      <div>
+        <button
+          use:reveal={{ transition: "blur", delay: 1000 }}
+          on:click={() => {
+            user.create(username, password, function (res) {
+              if (res.err == "User already created!") {
+                user.auth(username, password, function (res) {
+                  if (res.err == "Wrong user or password.") {
+                    toast("error", "wrong username/pass");
+                  } else {
+                    user_ = db.user()._.sea;
+                  }
+                });
+              } else {
+                user.auth(username, password, function (res) {
+                  toast("success");
+                  localStorage.setItem("keys", JSON.stringify(user._.sea));
+                  push("/home");
+                });
+              }
+            });
+          }}
+          class="btn btn-xs btn-ghost bg-blue-700 border transition-all duration-300 border-blue-600 hover:bg-blue-600 hover:bg-opacity-40 text-white hover:text-opacity-60 border-opacity-30"
+        >
+          go
+        </button>
+      </div>
     </div>
   </div>
 </div>

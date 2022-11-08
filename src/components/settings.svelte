@@ -53,3 +53,15 @@
     </div>
   </div>
 </div>
+<div class="m-auto mb-3">
+  <button
+    on:click={() => {
+      localStorage.clear();
+      user.leave();
+      location.href = "/";
+    }}
+    class="btn btn-xs btn-wide btn-ghost bg-red-500 bg-opacity-80 hover:bg-red-600 text-white"
+  >
+    log out
+  </button>
+</div>

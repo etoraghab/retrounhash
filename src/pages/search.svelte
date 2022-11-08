@@ -60,7 +60,9 @@
     {/each}
   </div>
 </div>
-<hr />
+<div class="flex justify-center items-center">
+  <div class="divider w-full md:w-1/2 lg:w-1/3" />
+</div>
 <br />
 <br />
 <br />

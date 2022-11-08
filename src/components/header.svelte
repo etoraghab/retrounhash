@@ -20,8 +20,7 @@
   import { v4 } from "uuid";
   import { SEA } from "gun";
   import Settings from "./settings.svelte";
-  import { onMount } from "svelte";
-  import { prevent_default } from "svelte/internal";
+  import { toast } from "./toast";
 
   if (!user.is) {
     push("/");
@@ -171,12 +170,12 @@
   <div class="w-full md:w-1/2 lg:w-1/3 m-auto h-0 fixed gap-2 z-3">
     <div
       class={writeMode || profileEditMode || settingsOpen == true
-        ? "bg-base-100 bg-opacity-80 backdrop-blur-sm"
+        ? "bg-base-100 bg-opacity-90 backdrop-blur-sm"
         : ""}
-      style="transition:all .5s;height: {height_header}rem;display: flex;flex-direction: column;margin: 0.75rem;border-radius: {border_header}px;backdrop-blur: blur(4px);"
+      style="transition:all .5s;height: {height_header}rem;display: flex;flex-direction: column;margin: 0.75rem;border-radius: {border_header}px;"
     >
       <div
-        class=" p-2 flex transition-all duration-400 backdrop-blur-sm rounded-full 
+        class=" p-2 flex border border-blue-600 border-opacity-40 transition-all duration-400 backdrop-blur-sm rounded-full 
         {writeMode || profileEditMode || settingsOpen == false
           ? 'bg-base-100'
           : ''} bg-opacity-80"
@@ -216,15 +215,6 @@
           </button>
         {/if}
 
-        {#if $location == "/home"}
-          <div
-            on:keypress={writePost}
-            on:click={writePost}
-            class="m-auto mr-1 p-1 rounded-full bg-base-100 bg-opacity-10"
-          >
-            <Pencil width="1.2em" />
-          </div>
-        {/if}
         {#if $location == `/u/${$keys.pub}`}
           <div
             on:keypress={editProfile}
@@ -234,7 +224,13 @@
             <Edit width="1.2em" />
           </div>
         {:else if $location.includes("/u/")}
-          <Clipboard text={window.location.href} let:copy on:copy={() => {}}>
+          <Clipboard
+            text={window.location.href}
+            let:copy
+            on:copy={() => {
+              toast("success", "copied");
+            }}
+          >
             <!-- svelte-ignore a11y-click-events-have-key-events -->
             <div
               on:click={copy}
@@ -243,6 +239,14 @@
               <ShareAlt width="1.2em" />
             </div>
           </Clipboard>
+        {:else if $location !== "/explore" && !$location.includes("/search")}
+          <div
+            on:keypress={writePost}
+            on:click={writePost}
+            class="m-auto mr-1 p-1 rounded-full bg-base-100 bg-opacity-10"
+          >
+            <Pencil width="1.2em" />
+          </div>
         {/if}
       </div>
       {#if writeMode}
@@ -250,11 +254,14 @@
           <div class="p-2">
             <div class="p-2">
               <textarea
-                class="w-full bg-base-100 bg-opacity-80 rounded-lg p-2"
+                class="w-full border border-blue-600 border-opacity-30 focus:border-opacity-70 transition-all duration-500 bg-base-100 bg-opacity-80 rounded-lg p-2"
                 placeholder="place your thoughts.."
                 bind:value={postContent}
               />
-              <button on:click={postThoughts} class="btn btn-xs btn-ghost">
+              <button
+                on:click={postThoughts}
+                class="btn btn-xs btn-ghost border transition-all duration-300 border-blue-600 hover:bg-blue-600 hover:bg-opacity-40 hover:text-white hover:text-opacity-60 border-opacity-30 focus:border-opacity-60"
+              >
                 post
               </button>
             </div>
@@ -300,7 +307,7 @@
 <div class="flex justify-center items-center w-full">
   <div class="w-full md:w-1/4 h-auto fixed bottom-0 gap-2 ">
     <div
-      class="m-2 p-1 flex backdrop-blur-sm rounded-full bg-base-100 bg-opacity-80"
+      class="m-2 border border-blue-600 border-opacity-40 p-1 flex backdrop-blur-sm rounded-full bg-base-100 bg-opacity-80"
     >
       <div class="m-auto p-1 rounded-full bg-base-100 bg-opacity-10">
         <a use:link href="/home">
@@ -326,3 +333,17 @@
   </div>
 </div>
 <div class="h-14" />
+
+<style>
+  textarea,
+  input {
+    overflow: auto;
+    outline: none;
+
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+
+    resize: none; /*remove the resize handle on the bottom right*/
+  }
+</style>

@@ -10,6 +10,7 @@
   import { user } from "./lib/gun";
   import { onMount } from "svelte";
   import Toast from "./components/toast.svelte";
+  import People from "./pages/people.svelte";
   /**
    * theme management
    */
@@ -38,6 +39,7 @@
       "/u/:pub": AccountRender,
       "/search/:query": SearchRenderer,
       "/explore/:tag": Explore,
+      "/friends": People,
     }}
   />
 </div>

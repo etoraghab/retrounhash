@@ -137,7 +137,9 @@
     <div class="text-xs m-2 p-2">
       {@html DOMPurify.sanitize(user_bio) || "404 bio not found"}
     </div>
-    <hr />
+    <div class="flex justify-center items-center">
+  <div class="divider w-full md:w-1/2 lg:w-1/3" />
+</div>
   </div>
 </div>
 <div class="p-3">
@@ -147,8 +149,9 @@
     {/each}
   </div>
 </div>
-
-<hr />
+<div class="flex justify-center items-center">
+  <div class="divider w-full md:w-1/2 lg:w-1/3" />
+</div>
 <br />
 <br />
 <br />
