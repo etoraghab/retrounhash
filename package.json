@@ -37,6 +37,7 @@
     "webpack-dev-server": "^4.9.0"
   },
   "dependencies": {
+    "@tailwindcss/line-clamp": "^0.4.2",
     "@tensorflow-models/toxicity": "^1.2.2",
     "@tensorflow/tfjs": "^4.0.0",
     "animate.css": "^4.1.1",

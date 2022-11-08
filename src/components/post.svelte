@@ -16,6 +16,7 @@
           /#+([a-zA-Z0-9_]+)/gi,
           '<a class="text-blue-600" href="#/search/#$1">#$1</a>'
         )
+        .replace(/\n/g, "<br>")
         .replace(new RegExp(bold, "gi"), "<b>" + bold + "</b>")
     );
   }
@@ -24,8 +25,9 @@
 <div
   use:reveal={{
     duration: 500,
-    transition: 'blur',
-    blur: 5
+    easing: "easeInBack",
+    blur: 2,
+    transition: "blur",
   }}
   class="bg-white bg-opacity-6 p-2 w-full md:w-1/2 lg:w-1/3 rounded-xl flex gap-2"
 >

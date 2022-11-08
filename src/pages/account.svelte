@@ -1,4 +1,5 @@
 <script>
+  import DOMPurify, { sanitize } from "dompurify";
   import Post from "../components/post.svelte";
   import { db, keys, user } from "../lib/gun";
   import { location } from "svelte-spa-router";
@@ -16,7 +17,7 @@
 
   let user_bio;
   user_graph.get("bio").on((bio) => {
-    user_bio = bio || "404 no bio";
+    user_bio = bio.replace(/\n/g, "<br>") || "404 no bio";
   });
 
   let user_displayName;
@@ -25,13 +26,20 @@
   });
 
   let posts = [];
+  let toxicity_state;
+  user
+    .get("settings")
+    .get("toxic_filter")
+    .once((val) => {
+      toxicity_state = val;
+    });
   user_graph.get("alias").once(async (name) => {
     user_graph
       .get("posts")
       .map()
       .once(async (post, key) => {
         if (typeof post.content == "string") {
-          if (localStorage.getItem("toxic_filter") == "true") {
+          if (toxicity_state) {
             toxicity.load(0.9).then((model) => {
               const sentences = [post.content];
               model.classify(sentences).then((predictions) => {
@@ -127,10 +135,10 @@
       {/if}
     </div>
     <div class="text-xs m-2 p-2">
-      {user_bio || "404 bio not found"}
+      {@html DOMPurify.sanitize(user_bio) || "404 bio not found"}
     </div>
+    <hr />
   </div>
-  <hr />
 </div>
 <div class="p-3">
   <div class="flex justify-center items-center flex-col gap-3">
@@ -139,6 +147,7 @@
     {/each}
   </div>
 </div>
+
 <hr />
 <br />
 <br />

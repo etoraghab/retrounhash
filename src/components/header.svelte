@@ -14,10 +14,12 @@
     Edit,
     ShareAlt,
     Search,
+    Cog,
   } from "@svicons/boxicons-regular";
   import { reveal } from "svelte-reveal";
   import { v4 } from "uuid";
   import { SEA } from "gun";
+  import Settings from "./settings.svelte";
 
   if (!user.is) {
     push("/");
@@ -100,6 +102,19 @@
     }
   }
 
+  let settingsOpen = false;
+  function openSettings() {
+    if (settingsOpen) {
+      settingsOpen = false;
+      border_header = 50;
+      height_header = 0;
+    } else {
+      border_header = 10;
+      height_header = 30;
+      settingsOpen = true;
+    }
+  }
+
   let displayNameGraph = user.get("displayName");
   let userBioInputGraph = user.get("bio");
 
@@ -134,14 +149,16 @@
 <div class="flex justify-center items-center w-full">
   <div class="w-full md:w-1/2 lg:w-1/3 m-auto h-0 fixed gap-2 z-3">
     <div
-      class={writeMode || profileEditMode == true
+      class={writeMode || profileEditMode || settingsOpen == true
         ? "bg-white bg-opacity-80 backdrop-blur-sm"
         : ""}
       style="transition:all .5s;height: {height_header}rem;display: flex;flex-direction: column;margin: 0.75rem;border-radius: {border_header}px;backdrop-blur: blur(4px);"
     >
       <div
         class=" p-2 flex transition-all duration-400 backdrop-blur-sm rounded-full 
-        {writeMode || profileEditMode == false ? 'bg-white' : ''} bg-opacity-80"
+        {writeMode || profileEditMode || settingsOpen == false
+          ? 'bg-white'
+          : ''} bg-opacity-80"
       >
         {#if $location.includes("/search") || $location.includes("/explore")}
           <input
@@ -159,6 +176,11 @@
             <Search width="1.2em" />
           </button>
         {:else}
+          <div class="m-auto ml-1 p-1 rounded-full bg-white bg-opacity-10">
+            <button on:click={openSettings}>
+              <Cog width="1.2em" />
+            </button>
+          </div>
           <button
             class="font-mono text-xl m-auto ml-3 mr-0 mb-auto cursor-pointer"
             on:click={() => {
@@ -167,17 +189,6 @@
           >
             verse
           </button>
-          <div class="font-mono text-sm mt-auto mb-auto ml-3">
-            <!-- svelte-ignore missing-declaration -->
-            <!-- svelte-ignore a11y-click-events-have-key-events -->
-            <Clipboard text={pub} let:copy on:copy={() => {}}>
-              <div on:click={copy} class="cursor-pointer m-auto">
-                <span class="m-auto">
-                  @{$username || "loading"}
-                </span>
-              </div>
-            </Clipboard>
-          </div>
         {/if}
 
         {#if $location == "/home"}
@@ -227,6 +238,10 @@
             </div>
           </div>
         </div>
+      {/if}
+
+      {#if settingsOpen}
+        <Settings />
       {/if}
       {#if profileEditMode}
         <div use:reveal>

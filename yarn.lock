@@ -1139,6 +1139,11 @@
   resolved "https://registry.yarnpkg.com/@svicons/boxicons-solid/-/boxicons-solid-0.1.11.tgz#deb20fd6aed2bae8eb2a2d1a2fe68a3d29729de3"
   integrity sha512-3OeLWmKIEqpP9t/PIdsH5rfN7bW833NGpm2wHjuVSVbfFtoAdhMpuF12oNCg1ko7DT0aaUIZeei6s2M3q4hqKQ==
 
+"@tailwindcss/line-clamp@^0.4.2":
+  version "0.4.2"
+  resolved "https://registry.yarnpkg.com/@tailwindcss/line-clamp/-/line-clamp-0.4.2.tgz#f353c5a8ab2c939c6267ac5b907f012e5ee130f9"
+  integrity sha512-HFzAQuqYCjyy/SX9sLGB1lroPzmcnWv1FHkIpmypte10hptf4oPUfucryMKovZh2u0uiS9U5Ty3GghWfEJGwVw==
+
 "@tensorflow-models/toxicity@^1.2.2":
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/@tensorflow-models/toxicity/-/toxicity-1.2.2.tgz#aed2cc92122f2fc949b42502bb55f8ed2e1d03a8"

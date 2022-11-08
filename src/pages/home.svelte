@@ -12,6 +12,13 @@
   let posts = [];
 
   user.get("following").get($keys.pub).put(true);
+  let toxicity_state;
+  user
+    .get("settings")
+    .get("toxic_filter")
+    .once((val) => {
+      toxicity_state = val;
+    });
 
   user
     .get("following")
@@ -25,7 +32,7 @@
             .map()
             .once(async (post, key) => {
               if (typeof post.content == "string") {
-                if (localStorage.getItem("toxic_filter") == "true") {
+                if (toxicity_state) {
                   toxicity.load(threshold).then((model) => {
                     const sentences = [post.content];
                     model.classify(sentences).then((predictions) => {
@@ -81,6 +88,12 @@
     {#each posts as p}
       <Post data={p} />
     {/each}
+    {#if posts.length == 0}
+      <div class="text-center text-md">no feed!</div>
+      <div class="text-center text-xs capitalize">
+        follow people or write posts to make them apear here.
+      </div>
+    {/if}
   </div>
 </div>
 
