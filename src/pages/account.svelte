@@ -79,7 +79,7 @@
 
   let isFollowed;
   let following_graph = db.user(pub).get("following").get(pub);
-  following_graph.on((val) => {
+  user.get("following").get(pub).on((val) => {
     isFollowed = val;
   });
 
@@ -126,7 +126,7 @@
         {#if !isFollowed}
           <button
             on:click={() => {
-              following_graph.put(true);
+              user.get("following").get(pub).put(true);
             }}
             class="btn btn-wide btn-xs bg-blue-600 hover:bg-blue-500 text-white border"
           >
@@ -135,7 +135,7 @@
         {:else}
           <button
             on:click={() => {
-              following_graph.put(false);
+              user.get("following").get(pub).put(false)
             }}
             class="btn btn-wide btn-xs btn-ghost"
           >
