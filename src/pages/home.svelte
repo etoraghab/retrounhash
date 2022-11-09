@@ -1,10 +1,12 @@
 <script>
+  import Loading from "../components/loading.svelte";
   import Post from "../components/post.svelte";
   import { db, keys, user } from "../lib/gun";
   require("@tensorflow/tfjs");
   const toxicity = require("@tensorflow-models/toxicity");
 
   const threshold = 0.9;
+  let loading = false;
 
   // Load the model. Users optionally pass in a threshold and an array of
   // labels to include
@@ -24,6 +26,7 @@
     .get("following")
     .map()
     .once(async (ifTrue, pub) => {
+      loading = true;
       if (ifTrue) {
         let user_graph = db.user(pub);
         await user_graph.get("alias").once(async (name) => {
@@ -70,6 +73,7 @@
             });
         });
       }
+      loading = false;
     });
 
   function sortEm() {
@@ -85,9 +89,13 @@
 
 <div class="p-3">
   <div class="flex justify-center items-center flex-col gap-3">
-    {#each posts as p}
-      <Post data={p} />
-    {/each}
+    {#if loading}
+      <Loading />
+    {:else}
+      {#each posts as p}
+        <Post data={p} />
+      {/each}
+    {/if}
     {#if posts.length == 0}
       <div class="text-center text-md">no feed!</div>
       <div class="text-center text-xs capitalize">

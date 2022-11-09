@@ -2,23 +2,38 @@
   import { link, push } from "svelte-spa-router";
   import DOMPurify from "dompurify";
   import { reveal } from "svelte-reveal";
-    import moment from "moment";
+  import moment from "moment";
   export let data;
   export let bold;
+  import { parse as parseEm } from "twemoji-parser";
+
+  function parseEmoji(str) {
+    const entities = parseEm(str);
+    let text = str;
+    entities.forEach((e) => {
+      text = text.replace(
+        new RegExp(e.text, "g"),
+        `<img src="${e.url}" draggable="false" class="h-3 mt-auto mb-auto selector" alt="" />`
+      );
+    });
+
+    return text;
+  }
 
   if (!bold) {
-    bold = "asdasdorywcpqw8tayhilus";
+    bold = "the meaning of life is 69";
   }
 
   function parse(t) {
     return DOMPurify.sanitize(
-      t
-        .replace(
-          /#+([a-zA-Z0-9_]+)/gi,
-          '<a class="text-blue-600" href="#/search/#$1">#$1</a>'
-        )
-        .replace(/\n/g, "<br>")
-        .replace(new RegExp(bold, "gi"), "<b>" + bold + "</b>")
+      parseEmoji(
+        t
+          .replace(
+            /#+([a-zA-Z0-9_]+)/gi,
+            '<a class="text-blue-500" href="#/search/#$1">#$1</a>'
+          )
+          .replace(/\n/g, "<br>")
+      )
     );
   }
 </script>
@@ -48,7 +63,7 @@
         {moment(new Date(data.date)).calendar()}
       </div>
     </div>
-    <span class="block">
+    <span class="flex gap-1 flex-wrap">
       {@html parse(data.content)}
     </span>
   </div>

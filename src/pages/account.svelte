@@ -2,7 +2,7 @@
   import DOMPurify, { sanitize } from "dompurify";
   import Post from "../components/post.svelte";
   import { db, keys, user } from "../lib/gun";
-  import { location } from "svelte-spa-router";
+  import { location, push } from "svelte-spa-router";
   require("@tensorflow/tfjs");
   const toxicity = require("@tensorflow-models/toxicity");
 
@@ -78,7 +78,7 @@
   });
 
   let isFollowed;
-  let following_graph = user.get("following").get(pub);
+  let following_graph = db.user(pub).get("following").get(pub);
   following_graph.on((val) => {
     isFollowed = val;
   });
@@ -90,6 +90,16 @@
   }
 
   $: posts, sortEm();
+
+  let following = 0;
+  following_graph
+    .back()
+    .map()
+    .once((val, pub_f) => {
+      if (val == true && pub_f !== pub) {
+        following += 1;
+      }
+    });
 </script>
 
 <div class="flex justify-center items-center">
@@ -137,9 +147,17 @@
     <div class="text-xs m-2 p-2">
       {@html DOMPurify.sanitize(user_bio) || "404 bio not found"}
     </div>
-    <div class="flex justify-center items-center">
-  <div class="divider w-full md:w-1/2 lg:w-1/3" />
-</div>
+    <div class="flex justify-center items-center flex-col">
+      <div class="divider m-auto w-full md:w-1/2 lg:w-1/3" />
+      <button
+        on:click={() => {
+          push(`/following/${pub}`);
+        }}
+      >
+        {following} following
+      </button>
+      <div class="divider m-auto w-full md:w-1/2 lg:w-1/3" />
+    </div>
   </div>
 </div>
 <div class="p-3">

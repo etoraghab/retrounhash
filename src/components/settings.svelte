@@ -9,7 +9,7 @@
     toxic_filter = val;
   });
 
-  settings.get("dark_mode").once((val) => {
+  settings.get("dark_mode").on((val) => {
     dark_mode = val;
     if (dark_mode) {
       document.querySelector("html").setAttribute("data-theme", "dark");
@@ -54,14 +54,20 @@
   </div>
 </div>
 <div class="m-auto mb-3">
-  <button
-    on:click={() => {
-      localStorage.clear();
-      user.leave();
-      location.href = "/";
+  <div
+    use:reveal={{
+      delay: 400,
     }}
-    class="btn btn-xs btn-wide btn-ghost bg-red-500 bg-opacity-80 hover:bg-red-600 text-white"
   >
-    log out
-  </button>
+    <button
+      on:click={() => {
+        localStorage.clear();
+        user.leave();
+        location.href = "/";
+      }}
+      class="btn btn-xs btn-wide btn-ghost bg-red-500 bg-opacity-80 hover:bg-red-600 text-white"
+    >
+      log out
+    </button>
+  </div>
 </div>

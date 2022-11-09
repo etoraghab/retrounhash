@@ -11,6 +11,7 @@
   import { onMount } from "svelte";
   import Toast from "./components/toast.svelte";
   import People from "./pages/people.svelte";
+  import Following from "./pages/following.svelte";
   /**
    * theme management
    */
@@ -40,6 +41,7 @@
       "/search/:query": SearchRenderer,
       "/explore/:tag": Explore,
       "/friends": People,
+      "/following/:pub": Following,
     }}
   />
 </div>

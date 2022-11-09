@@ -282,18 +282,21 @@
                   type="text"
                   placeholder="display name"
                   bind:value={user_display_input}
-                  class="w-full bg-base-100 bg-opacity-80 rounded-lg p-2"
+                  class="w-full border border-blue-600 border-opacity-30 focus:border-opacity-70 transition-all duration-500 bg-base-100 bg-opacity-80 rounded-lg p-2"
                 />
               </div>
               <div class="capitalize text-sm">bio</div>
               <div>
                 <textarea
-                  class="w-full bg-base-100 bg-opacity-80 rounded-lg p-2"
+                  class="w-full h-20 border border-blue-600 border-opacity-30 focus:border-opacity-70 transition-all duration-500 bg-base-100 bg-opacity-80 rounded-lg p-2"
                   placeholder="your bio goes here.."
                   bind:value={user_bio_input}
                 />
               </div>
-              <button on:click={saveUserInfo} class="btn btn-xs btn-ghost">
+              <button
+                on:click={saveUserInfo}
+                class="btn btn-xs btn-ghost border transition-all duration-300 border-blue-600 hover:bg-blue-600 hover:bg-opacity-40 hover:text-white hover:text-opacity-60 border-opacity-30 focus:border-opacity-60"
+              >
                 save
               </button>
             </div>

@@ -3,9 +3,11 @@
   import { reveal } from "svelte-reveal";
   import { push } from "svelte-spa-router";
   import { toast } from "../components/toast";
+  import Loading from "../components/loading.svelte";
 
   let username;
   let password;
+  let loading = false;
 
   let user_ = user.is;
   if (user_) {
@@ -16,6 +18,12 @@
       push("/home");
     });
   }
+
+  keys.subscribe(() => {
+    if ($keys.pub !== "") {
+      push("/home");
+    }
+  });
 </script>
 
 <div class="flex justify-center items-center">
@@ -26,49 +34,57 @@
     >
       verse
     </div>
-    <input
-      use:reveal={{ transition: "fade", delay: 150 }}
-      placeholder="username"
-      type="text"
-      bind:value={username}
-      class="input input-sm border-blue-700 border-opacity-80"
-    />
-    <div class="flex flex-col gap-3">
+    {#if loading}
+      <Loading />
+    {:else}
       <input
-        use:reveal={{ transition: "fade", delay: 450 }}
-        placeholder="password"
-        type="password"
-        bind:value={password}
+        use:reveal={{ transition: "fade", delay: 150 }}
+        placeholder="username"
+        type="text"
+        bind:value={username}
         class="input input-sm border-blue-700 border-opacity-80"
       />
+      <div class="flex flex-col gap-3">
+        <input
+          use:reveal={{ transition: "fade", delay: 450 }}
+          placeholder="password"
+          type="password"
+          bind:value={password}
+          class="input input-sm border-blue-700 border-opacity-80"
+        />
 
-      <div>
-        <button
-          use:reveal={{ transition: "blur", delay: 1000 }}
-          on:click={() => {
-            user.create(username, password, function (res) {
-              if (res.err == "User already created!") {
-                user.auth(username, password, function (res) {
-                  if (res.err == "Wrong user or password.") {
-                    toast("error", "wrong username/pass");
-                  } else {
-                    user_ = db.user()._.sea;
-                  }
-                });
-              } else {
-                user.auth(username, password, function (res) {
-                  toast("success");
-                  localStorage.setItem("keys", JSON.stringify(user._.sea));
-                  push("/home");
-                });
-              }
-            });
-          }}
-          class="btn btn-xs btn-ghost bg-blue-700 border transition-all duration-300 border-blue-600 hover:bg-blue-600 hover:bg-opacity-40 text-white hover:text-opacity-60 border-opacity-30"
-        >
-          go
-        </button>
+        <div>
+          <button
+            use:reveal={{ transition: "blur", delay: 1000 }}
+            on:click={async () => {
+              loading = true;
+              await user.auth(username, password, (e) => {
+                if (e.err == "Wrong user or password.") {
+                  user.create(username, password, (e) => {
+                    if (e.ok == 0) {
+                      user.auth(username, password, (e) => {
+                        toast("success");
+                      });
+                    } else if (e.err == "User already created!") {
+                      toast("error", "wrong username/pass");
+                    } else if (e.err == undefined) {
+                      toast("success", "user created");
+                    } else {
+                      toast("error", e.err);
+                    }
+                  });
+                } else if (e.err == "User already created!") {
+                  toast("error", "wrong username/pass");
+                }
+                loading = false;
+              });
+            }}
+            class="btn btn-xs btn-ghost bg-blue-700 border transition-all duration-300 border-blue-600 hover:bg-blue-600 hover:bg-opacity-40 text-white hover:text-opacity-60 border-opacity-30"
+          >
+            go
+          </button>
+        </div>
       </div>
-    </div>
+    {/if}
   </div>
 </div>
