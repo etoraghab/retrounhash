@@ -75,7 +75,7 @@
           await db
             .get("search")
             .get("query")
-            .get(`#${element}`)
+            .get(`#${String(element).toLowerCase()}`)
             .get(hash)
             .put(soul);
         }

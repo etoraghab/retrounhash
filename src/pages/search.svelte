@@ -9,7 +9,7 @@
   query.split(" ").forEach((query) => {
     db.get("search")
       .get("query")
-      .get("#" + query)
+      .get("#" + String(query).toLowerCase())
       .map()
       .once((post) => {
         db.get(post).once(async (a) => {
