@@ -17,6 +17,7 @@
       if (val == true && pub_f !== pub) {
         let user_posts = 0;
         let user_name;
+        let user_image;
 
         let user_graph = db.user(pub_f);
         await user_graph.get("alias").once((name) => {
@@ -30,6 +31,10 @@
             user_posts += 1;
           });
 
+        await user_graph.get("displayImage").once((pic) => {
+          user_image = pic;
+        });
+
         following_no += 1;
         following = [
           {
@@ -37,7 +42,9 @@
             pub: pub_f,
             username: user_name,
             posts: user_posts,
-            avatar: `https://avatars.dicebear.com/api/initials/${user_name}.svg`,
+            avatar:
+              user_image ||
+              `https://avatars.dicebear.com/api/initials/${user_name}.svg`,
           },
           ...following,
         ];

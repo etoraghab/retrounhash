@@ -16,20 +16,24 @@
           if (Object.hasOwn(a || {}, "pub") && Object.hasOwn(a || {}, "sign")) {
             let signed = await SEA.verify(a.sign, a.pub);
             if (signed === a.content) {
-              db.user(a.pub)
-                .get("alias")
-                .once((name) => {
+              let user_graph = db.user(a.pub);
+              user_graph.get("alias").once((name) => {
+                user_graph.get("displayImage").once(async (useAvatar) => {
                   posts = [
                     {
-                      avatar: `https://avatars.dicebear.com/api/initials/${name}.svg`,
+                      avatar:
+                        useAvatar ||
+                        `https://avatars.dicebear.com/api/initials/${name}.svg`,
                       content: a.content,
                       date: Gun.state.is(a, "content"),
                       username: name,
+                      img: a.img,
                       pub: a.pub,
                     },
                     ...posts,
                   ];
                 });
+              });
             }
           }
         });

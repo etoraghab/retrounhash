@@ -3,6 +3,7 @@
   import Post from "../components/post.svelte";
   import { db, keys, user } from "../lib/gun";
   import { location, push } from "svelte-spa-router";
+  import { once } from "svelte/internal";
   require("@tensorflow/tfjs");
   const toxicity = require("@tensorflow-models/toxicity");
 
@@ -13,6 +14,11 @@
   let username;
   user_graph.get("alias").once((name) => {
     username = name;
+  });
+
+  let user_img;
+  user_graph.get("displayImage").on((img) => {
+    user_img = img;
   });
 
   let user_bio;
@@ -33,55 +39,62 @@
     .once((val) => {
       toxicity_state = val;
     });
-  user_graph.get("alias").once(async (name) => {
-    user_graph
-      .get("posts")
-      .map()
-      .once(async (post, key) => {
-        if (typeof post.content == "string") {
+  user_graph.get("displayImage").once(async (useAvatar) => {
+    user_graph.get("alias").once(async (name) => {
+      user_graph
+        .get("posts")
+        .map()
+        .once(async (post, key) => {
           if (toxicity_state) {
             toxicity.load(0.9).then((model) => {
               const sentences = [post.content];
               model.classify(sentences).then((predictions) => {
                 if (predictions[6].results[0].match !== true) {
-                  if (Object.hasOwn(post, "content")) {
-                    posts = [
-                      {
-                        avatar: `https://avatars.dicebear.com/api/initials/${name}.svg`,
-                        content: post.content,
-                        date: new Date(post.date).toDateString(),
-                        username: name,
-                        pub: pub,
-                      },
-                      ...posts,
-                    ];
-                  }
+                  posts = [
+                    {
+                      avatar:
+                        useAvatar ||
+                        `https://avatars.dicebear.com/api/initials/${name}.svg`,
+                      content: post.content,
+                      date: new Date(post.date).toDateString(),
+                      username: name,
+                      pub: pub,
+                      img: post.img,
+                    },
+                    ...posts,
+                  ];
                 }
               });
             });
           } else {
-            if (Object.hasOwn(post, "content")) {
+            if (post && Object.hasOwn(post, "content")) {
               posts = [
                 {
-                  avatar: `https://avatars.dicebear.com/api/initials/${name}.svg`,
+                  avatar:
+                    useAvatar ||
+                    `https://avatars.dicebear.com/api/initials/${name}.svg`,
                   content: post.content,
                   date: Gun.state.is(post, "content"),
                   username: name,
+                  img: post.img,
                   pub: pub,
                 },
                 ...posts,
               ];
             }
           }
-        }
-      });
+        });
+    });
   });
 
   let isFollowed;
   let following_graph = db.user(pub).get("following").get(pub);
-  user.get("following").get(pub).on((val) => {
-    isFollowed = val;
-  });
+  user
+    .get("following")
+    .get(pub)
+    .on((val) => {
+      isFollowed = val;
+    });
 
   function sortEm() {
     posts.sort(
@@ -107,7 +120,8 @@
     <div class="m-2 p-2 flex items-center">
       <img
         class="h-16 w-16 aspect-square object-cover rounded-full"
-        src={`https://avatars.dicebear.com/api/initials/${username}.svg`}
+        src={user_img ||
+          `https://avatars.dicebear.com/api/initials/${username}.svg`}
         alt=""
       />
       <div class="flex w-full flex-col justify-center items-center">
@@ -135,7 +149,7 @@
         {:else}
           <button
             on:click={() => {
-              user.get("following").get(pub).put(false)
+              user.get("following").get(pub).put(false);
             }}
             class="btn btn-wide btn-xs btn-ghost"
           >

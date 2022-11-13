@@ -2,7 +2,7 @@
   import moment from "moment";
   moment().format();
   import { push, link, location } from "svelte-spa-router";
-  import { db, keys, user, username } from "../lib/gun";
+  import { db, keys, user } from "../lib/gun";
   import Clipboard from "svelte-clipboard";
 
   import Home from "@svicons/boxicons-regular/home.svelte";
@@ -15,6 +15,7 @@
     ShareAlt,
     Search,
     Cog,
+    Camera,
   } from "@svicons/boxicons-regular";
   import { reveal } from "svelte-reveal";
   import { v4 } from "uuid";
@@ -54,6 +55,7 @@
       .put({
         date: String(moment().toString()),
         content: postContent,
+        img: postImage || "",
         sign: await SEA.sign(postContent, $keys),
         pub: $keys.pub,
       })
@@ -80,7 +82,8 @@
             .put(soul);
         }
 
-        postContent = null;
+        postContent = undefined;
+        postImage = undefined;
       });
 
     writePost();
@@ -120,13 +123,20 @@
 
   let displayNameGraph = user.get("displayName");
   let userBioInputGraph = user.get("bio");
+  let userProfileImageGraph = user.get("displayImage");
 
-  let user_bio_input, user_display_input;
+  let user_bio_input, user_display_input, user_display_image;
   async function saveUserInfo() {
     await displayNameGraph.put(user_display_input);
     await userBioInputGraph.put(user_bio_input);
+    await userProfileImageGraph.put(imgProfile);
     editProfile();
   }
+
+  let imgProfile;
+  userProfileImageGraph.on((img) => {
+    imgProfile = img;
+  });
 
   displayNameGraph.on((name) => {
     user_display_input = name;
@@ -164,6 +174,28 @@
       }, 1000);
     }
   });
+
+  let postImage;
+
+  function imageUploaded() {
+    var file = document.querySelector("#avatar-chooser").files[0];
+
+    var reader = new FileReader();
+    reader.onload = async function () {
+      postImage = reader.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function imageUploadedProfile() {
+    var file = document.querySelector("#profilePicChoser").files[0];
+
+    var reader = new FileReader();
+    reader.onload = async function () {
+      imgProfile = reader.result;
+    };
+    reader.readAsDataURL(file);
+  }
 </script>
 
 <div class="flex justify-center items-center w-full">
@@ -254,13 +286,48 @@
           <div class="p-2">
             <div class="p-2">
               <textarea
-                class="w-full border border-blue-600 border-opacity-30 focus:border-opacity-70 transition-all duration-500 bg-base-100 bg-opacity-80 rounded-lg p-2"
+                class="w-full border border-blue-600 border-opacity-30 focus:border-opacity-70 transition-all duration-500 bg-base-100 bg-opacity-0 rounded-lg p-2"
                 placeholder="place your thoughts.."
                 bind:value={postContent}
               />
+              <div>
+                {#if postImage !== undefined}
+                  <!-- svelte-ignore a11y-click-events-have-key-events -->
+                  <button
+                    on:click={() => {
+                      postImage = undefined;
+                    }}
+                  >
+                    <label for="avatar-chooser">
+                      <img
+                        class="rounded-md object-cover h-14 w-14"
+                        src={postImage}
+                        alt=""
+                      />
+                    </label>
+                  </button>
+                {:else}
+                  <button
+                    class="p-3 border transition-all duration-300 border-blue-600 hover:bg-blue-100 border-opacity-30 focus:border-opacity-60 rounded-md w-14 h-14 flex justify-center items-center"
+                  >
+                    <label for="avatar-chooser">
+                      <Camera width="1.5em" />
+                    </label>
+                  </button>
+                {/if}
+
+                <input
+                  type="file"
+                  name="avatar-chooser"
+                  id="avatar-chooser"
+                  on:change={imageUploaded}
+                  accept="image/*"
+                  class="hidden"
+                />
+              </div>
               <button
                 on:click={postThoughts}
-                class="btn btn-xs btn-ghost border transition-all duration-300 border-blue-600 hover:bg-blue-600 hover:bg-opacity-40 hover:text-white hover:text-opacity-60 border-opacity-30 focus:border-opacity-60"
+                class="btn mt-1 btn-xs btn-ghost border transition-all duration-300 border-blue-600 hover:bg-blue-600 hover:bg-opacity-40 hover:text-white hover:text-opacity-60 border-opacity-30 focus:border-opacity-60"
               >
                 post
               </button>
@@ -276,6 +343,40 @@
         <div use:reveal>
           <div class="p-2">
             <div class="p-2">
+              <div class="flex justify-center items-center">
+                {#if imgProfile !== undefined}
+                  <!-- svelte-ignore a11y-click-events-have-key-events -->
+                  <button
+                    on:click={() => {
+                      imgProfile = undefined;
+                    }}
+                  >
+                    <label for="profilePicChoser">
+                      <img
+                        class="rounded-md object-cover h-14 w-14"
+                        src={imgProfile}
+                        alt=""
+                      />
+                    </label>
+                  </button>
+                {:else}
+                  <button
+                    class="p-3 border transition-all duration-300 border-blue-600 hover:bg-blue-100 border-opacity-30 focus:border-opacity-60 rounded-md w-14 h-14 flex justify-center items-center"
+                  >
+                    <label for="profilePicChoser">
+                      <Camera width="1.5em" />
+                    </label>
+                  </button>
+                {/if}
+                <input
+                  type="file"
+                  name="profilePicChoser"
+                  id="profilePicChoser"
+                  on:change={imageUploadedProfile}
+                  accept="image/*"
+                  class="hidden"
+                />
+              </div>
               <div class="capitalize text-sm">display name</div>
               <div class="pb-2">
                 <input

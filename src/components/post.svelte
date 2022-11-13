@@ -6,6 +6,7 @@
   export let data;
   export let bold;
   import { parse as parseEm } from "twemoji-parser";
+  import { X } from "@svicons/boxicons-regular";
 
   function parseEmoji(str) {
     const entities = parseEm(str);
@@ -36,6 +37,8 @@
       )
     );
   }
+
+  let overlay;
 </script>
 
 <div
@@ -66,5 +69,55 @@
     <span class="flex gap-1 flex-wrap">
       {@html parse(data.content)}
     </span>
+    {#if data.img}
+      <button
+        on:click={() => {
+          overlay = true;
+        }}
+      >
+        <img
+          src={data.img}
+          class="w-full h-32 aspect-square rounded-md object-cover"
+          alt=""
+        />
+      </button>
+    {/if}
   </div>
 </div>
+{#if overlay}
+  <div
+    use:reveal={{
+      transition: "blur",
+    }}
+    class="bg-base-100 flex justify-center items-center bg-opacity-50 backdrop-blur-sm"
+    id="overlay"
+  >
+    <div class="indicator m-3">
+      <button
+        on:click={() => {
+          overlay = false;
+        }}
+        class="indicator-item badge badge-ghost p-1"
+      >
+        <X width="1em" />
+      </button>
+      <div class="grid bg-base-300 place-items-center">
+        <img src={data.img} class="rounded-md md:w-96 h-auto" alt="" />
+      </div>
+    </div>
+  </div>
+{/if}
+
+<style>
+  #overlay {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
+    cursor: pointer;
+  }
+</style>

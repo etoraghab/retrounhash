@@ -8,9 +8,6 @@
   const threshold = 0.9;
   let loading = false;
 
-  // Load the model. Users optionally pass in a threshold and an array of
-  // labels to include
-
   let posts = [];
 
   user.get("following").get($keys.pub).put(true);
@@ -30,11 +27,11 @@
       if (ifTrue) {
         let user_graph = db.user(pub);
         await user_graph.get("alias").once(async (name) => {
-          await user_graph
-            .get("posts")
-            .map()
-            .once(async (post, key) => {
-              if (typeof post.content == "string") {
+          user_graph.get("displayImage").once(async (useAvatar) => {
+            await user_graph
+              .get("posts")
+              .map()
+              .once(async (post, key) => {
                 if (toxicity_state) {
                   toxicity.load(threshold).then((model) => {
                     const sentences = [post.content];
@@ -43,10 +40,13 @@
                         if (Object.hasOwn(post, "content")) {
                           posts = [
                             {
-                              avatar: `https://avatars.dicebear.com/api/initials/${name}.svg`,
+                              avatar:
+                                useAvatar ||
+                                `https://avatars.dicebear.com/api/initials/${name}.svg`,
                               content: post.content,
                               date: Gun.state.is(post, "content"),
                               username: name,
+                              img: post.img,
                               pub: pub,
                             },
                             ...posts,
@@ -59,18 +59,21 @@
                   if (Object.hasOwn(post, "content")) {
                     posts = [
                       {
-                        avatar: `https://avatars.dicebear.com/api/initials/${name}.svg`,
+                        avatar:
+                          useAvatar ||
+                          `https://avatars.dicebear.com/api/initials/${name}.svg`,
                         content: post.content,
                         date: Gun.state.is(post, "content"),
                         username: name,
                         pub: pub,
+                        img: post.img,
                       },
                       ...posts,
                     ];
                   }
                 }
-              }
-            });
+              });
+          });
         });
       }
       loading = false;
