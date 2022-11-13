@@ -102,7 +102,7 @@
         <X width="1em" />
       </button>
       <div class="grid bg-base-100 place-items-center rounded-md">
-        <img src={data.img} class="rounded-md md:w-96 h-auto" alt="" />
+        <img src={data.img} class="rounded-md md:w-96 max-h-96" alt="" />
       </div>
     </div>
   </div>
