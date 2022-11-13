@@ -13,7 +13,7 @@
   if (user_) {
     push("/home");
   }
-  if (localStorage.getItem("keys") && Object.hasOwn(!user_, "pub")) {
+  if (localStorage.getItem("keys")) {
     user.auth(JSON.parse(localStorage.getItem("keys")), function (res) {
       push("/home");
     });

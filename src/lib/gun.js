@@ -14,6 +14,7 @@ export const keys = writable({
   pub: ""
 })
 db.on("auth", () => {
+  localStorage.setItem("keys", JSON.stringify(user._.sea))
   user.get("alias").once((name) => {
     username.set(name)
   })

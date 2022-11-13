@@ -1,7 +1,9 @@
 <script>
+  import package_ from "../../package.json";
   import { toast } from "../components/toast";
   import { user } from "../lib/gun";
   import { reveal } from "svelte-reveal";
+  import { version } from "uuid";
   let toxic_filter, dark_mode;
   let settings = user.get("settings");
 
@@ -69,5 +71,8 @@
     >
       log out
     </button>
+    <div class="text-center m-1 text-xs text-opacity-60">
+      <i>v{package_.version}</i>
+    </div>
   </div>
 </div>
