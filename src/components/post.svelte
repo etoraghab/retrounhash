@@ -56,7 +56,7 @@
       push(`/u/${data.pub}`);
     }}
     src={data.avatar}
-    class="rounded-lg w-10 h-10 aspect-square object-cover cursor-pointer"
+    class="rounded-full w-10 h-10 aspect-square object-cover cursor-pointer"
     alt=""
   />
   <div class="text-xs break-all w-full flex flex-col">
@@ -101,7 +101,7 @@
       >
         <X width="1em" />
       </button>
-      <div class="grid bg-base-300 place-items-center">
+      <div class="grid bg-base-100 place-items-center rounded-md">
         <img src={data.img} class="rounded-md md:w-96 h-auto" alt="" />
       </div>
     </div>
