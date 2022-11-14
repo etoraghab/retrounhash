@@ -90,7 +90,7 @@
               push(`/u/${f.pub}`);
             }}
             src={f.avatar}
-            class="rounded-lg w-10 h-10 aspect-square object-cover cursor-pointer"
+            class="rounded-full w-10 h-10 aspect-square object-cover cursor-pointer"
             alt=""
           />
           <div class="text-xs break-all w-full flex flex-col">
