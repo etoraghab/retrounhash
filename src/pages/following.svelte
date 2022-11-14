@@ -78,10 +78,9 @@
       {#each following as f}
         <div
           use:reveal={{
-            duration: 500,
+            duration: 450,
             easing: "easeInBack",
-            blur: 2,
-            transition: "blur",
+            transition: "fade",
           }}
           class="bg-base-100 border border-blue-600 border-opacity-10 bg-opacity-6 p-2 w-full md:w-1/2 lg:w-1/3 rounded-xl flex gap-2"
         >
