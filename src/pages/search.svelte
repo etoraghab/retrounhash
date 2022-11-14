@@ -19,19 +19,21 @@
               let user_graph = db.user(a.pub);
               user_graph.get("alias").once((name) => {
                 user_graph.get("displayImage").once(async (useAvatar) => {
-                  posts = [
-                    {
-                      avatar:
-                        useAvatar ||
-                        `https://avatars.dicebear.com/api/initials/${name}.svg`,
-                      content: a.content,
-                      date: Gun.state.is(a, "content"),
-                      username: name,
-                      img: a.img,
-                      pub: a.pub,
-                    },
-                    ...posts,
-                  ];
+                  if (typeof a !== undefined) {
+                    posts = [
+                      {
+                        avatar:
+                          useAvatar ||
+                          `https://avatars.dicebear.com/api/initials/${name}.svg`,
+                        content: a.content,
+                        date: Gun.state.is(a, "content"),
+                        username: name,
+                        img: a.img,
+                        pub: a.pub,
+                      },
+                      ...posts,
+                    ];
+                  }
                 });
               });
             }

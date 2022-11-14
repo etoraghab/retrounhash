@@ -7,7 +7,7 @@
   import Explore from "./pages/explore.svelte";
   import AccountRender from "./pages/accountRender.svelte";
   import SearchRenderer from "./pages/searchRenderer.svelte";
-  import { user } from "./lib/gun";
+  import { user, username } from "./lib/gun";
   import { onMount } from "svelte";
   import Toast from "./components/toast.svelte";
   import People from "./pages/people.svelte";

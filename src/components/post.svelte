@@ -6,7 +6,8 @@
   export let data;
   export let bold;
   import { parse as parseEm } from "twemoji-parser";
-  import { X } from "@svicons/boxicons-regular";
+  import { TrashAlt, X } from "@svicons/boxicons-regular";
+  import { user } from "../lib/gun";
 
   function parseEmoji(str) {
     const entities = parseEm(str);
@@ -39,6 +40,7 @@
   }
 
   let overlay;
+  let deleted = "";
 </script>
 
 <div
@@ -48,39 +50,62 @@
     blur: 2,
     transition: "fade",
   }}
-  class="bg-base-100 border border-blue-600 border-opacity-10 bg-opacity-6 p-2 w-full md:w-1/2 lg:w-1/3 rounded-xl flex gap-2"
+  style="display: {deleted};"
+  class="bg-base-100 flex-col border border-blue-600 border-opacity-10 bg-opacity-6 p-2 w-full md:w-1/2 lg:w-1/3 rounded-xl flex gap-2"
 >
   <!-- svelte-ignore a11y-click-events-have-key-events -->
-  <img
-    on:click={() => {
-      push(`/u/${data.pub}`);
-    }}
-    src={data.avatar}
-    class="rounded-full w-10 h-10 aspect-square object-cover cursor-pointer"
-    alt=""
-  />
-  <div class="text-xs break-all w-full flex flex-col">
-    <div class="flex w-full">
-      <div class="text-md truncate">@{data.username}</div>
-      <div class="m-auto mr-1" style="font-size: .7em;">
-        {moment(new Date(data.date)).calendar()}
+  <div class="flex gap-2">
+    <img
+      on:click={() => {
+        push(`/u/${data.pub}`);
+      }}
+      src={data.avatar}
+      class="rounded-full w-10 h-10 aspect-square object-cover cursor-pointer"
+      alt=""
+    />
+    <div class="text-xs break-all w-full flex flex-col">
+      <div class="flex w-full">
+        <div class="text-md truncate">@{data.username}</div>
+        <div class="m-auto mr-1" style="font-size: .7em;">
+          {moment(new Date(data.date)).calendar()}
+        </div>
       </div>
+      <span class="flex gap-1 flex-wrap">
+        {@html parse(data.content)}
+      </span>
+      {#if data.img}
+        <div class="mt-0.5" />
+        <button
+          on:click={() => {
+            overlay = true;
+          }}
+        >
+          <img
+            src={data.img}
+            class="w-full h-32 aspect-square rounded-md object-cover"
+            alt=""
+          />
+        </button>
+      {/if}
     </div>
-    <span class="flex gap-1 flex-wrap">
-      {@html parse(data.content)}
-    </span>
-    {#if data.img}
-      <button
-        on:click={() => {
-          overlay = true;
-        }}
-      >
-        <img
-          src={data.img}
-          class="w-full h-32 aspect-square rounded-md object-cover"
-          alt=""
-        />
-      </button>
+  </div>
+  <div class="flex">
+    {#if data.self}
+      <div class="m-auto mr-1 text-red-600">
+        <button
+          on:click={async () => {
+            await user
+              .get("posts")
+              .get(data.uid)
+              .put(null)
+              .then(() => {
+                deleted = "none";
+              });
+          }}
+        >
+          <TrashAlt width="1.2em" />
+        </button>
+      </div>
     {/if}
   </div>
 </div>
@@ -89,6 +114,7 @@
   <div
     use:reveal={{
       transition: "fade",
+      duration: 200,
     }}
     class="bg-base-100 flex justify-center items-center bg-opacity-50 backdrop-blur-sm"
     id="overlay"
@@ -103,11 +129,7 @@
         <X width="1em" />
       </button>
       <div class="grid bg-base-100 place-items-center rounded-md">
-        <img
-          src={data.img}
-          class="rounded-md md:max-w-96 max-h-96"
-          alt=""
-        />
+        <img src={data.img} class="rounded-md md:max-w-96 max-h-96" alt="" />
       </div>
     </div>
   </div>

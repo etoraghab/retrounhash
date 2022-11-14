@@ -1,9 +1,8 @@
 <script>
   import DOMPurify, { sanitize } from "dompurify";
   import Post from "../components/post.svelte";
-  import { db, keys, user } from "../lib/gun";
+  import { db, keys, user, username as username_ } from "../lib/gun";
   import { location, push } from "svelte-spa-router";
-  import { once } from "svelte/internal";
   require("@tensorflow/tfjs");
   const toxicity = require("@tensorflow-models/toxicity");
 
@@ -50,24 +49,40 @@
               const sentences = [post.content];
               model.classify(sentences).then((predictions) => {
                 if (predictions[6].results[0].match !== true) {
-                  posts = [
-                    {
-                      avatar:
-                        useAvatar ||
-                        `https://avatars.dicebear.com/api/initials/${name}.svg`,
-                      content: post.content,
-                      date: new Date(post.date).toDateString(),
-                      username: name,
-                      pub: pub,
-                      img: post.img,
-                    },
-                    ...posts,
-                  ];
+                  if (typeof post !== undefined && post) {
+                    let self;
+                    if ($username_ === name) {
+                      self = true;
+                    } else {
+                      self = false;
+                    }
+                    posts = [
+                      {
+                        avatar:
+                          useAvatar ||
+                          `https://avatars.dicebear.com/api/initials/${name}.svg`,
+                        content: post.content,
+                        date: new Date(post.date).toDateString(),
+                        username: name,
+                        pub: pub,
+                        img: post.img,
+                        uid: key,
+                        self: self,
+                      },
+                      ...posts,
+                    ];
+                  }
                 }
               });
             });
           } else {
-            if (post && Object.hasOwn(post, "content")) {
+            if (typeof post !== undefined && post) {
+              let self;
+              if ($username_ === name) {
+                self = true;
+              } else {
+                self = false;
+              }
               posts = [
                 {
                   avatar:
@@ -78,6 +93,8 @@
                   username: name,
                   img: post.img,
                   pub: pub,
+                  uid: key,
+                  self: self,
                 },
                 ...posts,
               ];
@@ -179,6 +196,9 @@
     {#each posts as p}
       <Post data={p} />
     {/each}
+    {#if posts.length == 0}
+      {username} has not yet posted anything
+    {/if}
   </div>
 </div>
 <div class="flex justify-center items-center">
