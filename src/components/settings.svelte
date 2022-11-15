@@ -31,7 +31,7 @@
           <input
             type="checkbox"
             bind:checked={toxic_filter}
-            class="toggle toggle-xs m-auto mr-1"
+            class="toggle toggle-accent toggle-xs m-auto mr-1"
             on:change={() => {
               toast("success", "saved");
               settings.get("toxic_filter").put(toxic_filter);
@@ -43,7 +43,7 @@
           <input
             type="checkbox"
             bind:checked={dark_mode}
-            class="toggle toggle-xs m-auto mr-1"
+            class="toggle toggle-accent toggle-xs m-auto mr-1"
             on:change={() => {
               toast("success", "saved");
               settings.get("dark_mode").put(dark_mode);
