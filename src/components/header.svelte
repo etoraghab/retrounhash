@@ -202,7 +202,7 @@
   <div class="w-full md:w-1/2 lg:w-1/3 m-auto h-0 fixed gap-2 z-3">
     <div
       class={writeMode || profileEditMode || settingsOpen == true
-        ? "bg-base-100 bg-opacity-90 backdrop-blur-md"
+        ? "bg-base-100 bg-opacity-70 backdrop-blur-md"
         : ""}
       style="transition:all .5s;height: {height_header}rem;display: flex;flex-direction: column;margin: 0.75rem;border-radius: {border_header}px;"
     >
