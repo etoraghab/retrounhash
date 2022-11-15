@@ -8,6 +8,7 @@
   import { parse as parseEm } from "twemoji-parser";
   import { TrashAlt, X } from "@svicons/boxicons-regular";
   import { user } from "../lib/gun";
+  import { transition_in } from "svelte/internal";
 
   function parseEmoji(str) {
     const entities = parseEm(str);
@@ -115,10 +116,10 @@
 {#if overlay}
   <div
     use:reveal={{
-      transition: "fade",
+      transition: "slide",
       duration: 200,
     }}
-    class="bg-base-100 flex justify-center items-center bg-opacity-50 backdrop-blur-sm"
+    class="bg-base-100 flex justify-center items-center bg-opacity-50 backdrop-blur-md"
     id="overlay"
   >
     <div class="indicator m-3">
