@@ -118,7 +118,7 @@
       transition: "fade",
       duration: 200,
     }}
-    class="bg-base-100 flex justify-center items-center bg-opacity-50 backdrop-blur-md"
+    class="bg-base-100 flex justify-center items-center bg-opacity-50 backdrop-blur-sm"
     id="overlay"
   >
     <div class="indicator m-3">

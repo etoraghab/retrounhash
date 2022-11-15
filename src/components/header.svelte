@@ -202,12 +202,12 @@
   <div class="w-full md:w-1/2 lg:w-1/3 m-auto h-0 fixed gap-2 z-3">
     <div
       class={writeMode || profileEditMode || settingsOpen == true
-        ? "bg-base-100 bg-opacity-70 backdrop-blur-md"
+        ? "bg-base-100 bg-opacity-90 backdrop-blur-sm"
         : ""}
       style="transition:all .5s;height: {height_header}rem;display: flex;flex-direction: column;margin: 0.75rem;border-radius: {border_header}px;"
     >
       <div
-        class=" p-2 flex border border-blue-600 border-opacity-40 transition-all duration-400 backdrop-blur-md rounded-full 
+        class=" p-2 flex border border-blue-600 border-opacity-40 transition-all duration-400 backdrop-blur-sm rounded-full 
         {writeMode || profileEditMode || settingsOpen == false
           ? 'bg-base-100'
           : ''} bg-opacity-80"
@@ -381,13 +381,13 @@
                   type="text"
                   placeholder="display name"
                   bind:value={user_display_input}
-                  class="w-full border border-blue-600 border-opacity-30 focus:border-opacity-70 transition-all duration-500 bg-base-100 bg-opacity-0 rounded-lg p-2"
+                  class="w-full border border-blue-600 border-opacity-30 focus:border-opacity-70 transition-all duration-500 bg-base-100 bg-opacity-80 rounded-lg p-2"
                 />
               </div>
               <div class="capitalize text-sm">bio</div>
               <div>
                 <textarea
-                  class="w-full h-20 border border-blue-600 border-opacity-30 focus:border-opacity-70 transition-all duration-500 bg-base-100 bg-opacity-0 rounded-lg p-2"
+                  class="w-full h-20 border border-blue-600 border-opacity-30 focus:border-opacity-70 transition-all duration-500 bg-base-100 bg-opacity-80 rounded-lg p-2"
                   placeholder="your bio goes here.."
                   bind:value={user_bio_input}
                 />
@@ -409,7 +409,7 @@
 <div class="flex justify-center items-center w-full">
   <div class="w-2/3 md:w-1/4 lg:w-1/5 h-auto fixed bottom-0 gap-2 ">
     <div
-      class="m-2 border border-blue-700 border-opacity-40 p-1 flex backdrop-blur-md rounded-full bg-base-100 bg-opacity-80"
+      class="m-2 border border-blue-700 border-opacity-40 p-1 flex backdrop-blur-sm rounded-full bg-base-100 bg-opacity-80"
     >
       <div class="m-auto p-1 rounded-full bg-base-100 bg-opacity-10">
         <a use:link href="/home">
