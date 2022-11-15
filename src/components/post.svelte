@@ -48,7 +48,6 @@
   use:reveal={{
     duration: 500,
     easing: "easeInBack",
-    blur: 2,
     transition: "fade",
   }}
   style="display: {deleted};"

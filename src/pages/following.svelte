@@ -78,7 +78,7 @@
       {#each following as f}
         <div
           use:reveal={{
-            duration: 450,
+            duration: 200,
             easing: "easeInBack",
             transition: "fade",
           }}
