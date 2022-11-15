@@ -21,7 +21,6 @@
   });
 </script>
 
-<!-- svelte-ignore non-top-level-reactive-declaration -->
 <div use:reveal>
   <div class="p-2">
     <div class="p-2">

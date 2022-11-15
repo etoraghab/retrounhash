@@ -263,13 +263,12 @@
               toast("success", "copied");
             }}
           >
-            <!-- svelte-ignore a11y-click-events-have-key-events -->
-            <div
+            <button
               on:click={copy}
               class="m-auto mr-1 p-1 rounded-full bg-base-100 bg-opacity-10"
             >
               <ShareAlt width="1.2em" />
-            </div>
+            </button>
           </Clipboard>
         {:else if $location !== "/explore" && !$location.includes("/search")}
           <div
@@ -292,7 +291,6 @@
               />
               <div>
                 {#if postImage !== undefined}
-                  <!-- svelte-ignore a11y-click-events-have-key-events -->
                   <button
                     on:click={() => {
                       postImage = undefined;
@@ -308,7 +306,7 @@
                   </button>
                 {:else}
                   <button
-                    class="p-3 border transition-all duration-300 border-blue-600 hover:bg-blue-100 border-opacity-30 focus:border-opacity-60 rounded-md w-14 h-14 flex justify-center items-center"
+                    class="p-3 mt-1 btn-ghost h-14 w-14 flex justify-center items-center rounded-md border transition-all duration-300 border-blue-600 hover:bg-blue-600 hover:bg-opacity-90 hover:text-white hover:text-opacity-90 border-opacity-30 focus:border-opacity-90"
                   >
                     <label for="avatar-chooser">
                       <Camera width="1.5em" />
@@ -327,7 +325,7 @@
               </div>
               <button
                 on:click={postThoughts}
-                class="btn mt-1 btn-xs btn-ghost border transition-all duration-300 border-blue-600 hover:bg-blue-600 hover:bg-opacity-40 hover:text-white hover:text-opacity-60 border-opacity-30 focus:border-opacity-60"
+                class="btn mt-1 btn-xs btn-ghost border transition-all duration-300 border-blue-600 hover:bg-blue-600 hover:bg-opacity-90 hover:text-white hover:text-opacity-90 border-opacity-30 focus:border-opacity-90"
               >
                 post
               </button>
@@ -344,11 +342,11 @@
           <div class="p-2">
             <div class="p-2">
               <div class="flex justify-center items-center">
-                {#if imgProfile !== undefined}
-                  <!-- svelte-ignore a11y-click-events-have-key-events -->
+                {#if imgProfile !== undefined && imgProfile !== null}
                   <button
-                    on:click={() => {
+                    on:click={async () => {
                       imgProfile = undefined;
+                      await userProfileImageGraph.put(null);
                     }}
                   >
                     <label for="profilePicChoser">
@@ -361,7 +359,7 @@
                   </button>
                 {:else}
                   <button
-                    class="p-3 border transition-all duration-300 border-blue-600 hover:bg-blue-100 border-opacity-30 focus:border-opacity-60 rounded-md w-14 h-14 flex justify-center items-center"
+                    class="p-3 mt-1 btn-ghost h-14 w-14 flex justify-center items-center rounded-md border transition-all duration-300 border-blue-600 hover:bg-blue-600 hover:bg-opacity-90 hover:text-white hover:text-opacity-90 border-opacity-30 focus:border-opacity-90"
                   >
                     <label for="profilePicChoser">
                       <Camera width="1.5em" />
@@ -396,7 +394,7 @@
               </div>
               <button
                 on:click={saveUserInfo}
-                class="btn btn-xs btn-ghost border transition-all duration-300 border-blue-600 hover:bg-blue-600 hover:bg-opacity-40 hover:text-white hover:text-opacity-60 border-opacity-30 focus:border-opacity-60"
+                class="btn mt-1 btn-xs btn-ghost border transition-all duration-300 border-blue-600 hover:bg-blue-600 hover:bg-opacity-90 hover:text-white hover:text-opacity-90 border-opacity-30 focus:border-opacity-90"
               >
                 save
               </button>
@@ -409,28 +407,28 @@
 </div>
 
 <div class="flex justify-center items-center w-full">
-  <div class="w-full md:w-1/4 h-auto fixed bottom-0 gap-2 ">
+  <div class="w-2/3 md:w-1/4 lg:w-1/5 h-auto fixed bottom-0 gap-2 ">
     <div
-      class="m-2 border border-blue-600 border-opacity-40 p-1 flex backdrop-blur-sm rounded-full bg-base-100 bg-opacity-80"
+      class="m-2 border border-blue-700 border-opacity-40 p-1 flex backdrop-blur-sm rounded-full bg-base-100 bg-opacity-80"
     >
       <div class="m-auto p-1 rounded-full bg-base-100 bg-opacity-10">
         <a use:link href="/home">
-          <Home width="1.5em" />
+          <Home width="1.4em" />
         </a>
       </div>
       <div class="m-auto p-1 rounded-full bg-base-100 bg-opacity-10">
         <a use:link href="/explore">
-          <Compass width="1.5em" />
+          <Compass width="1.4em" />
         </a>
       </div>
       <div class="m-auto p-1 rounded-full bg-base-100 bg-opacity-10">
         <a use:link href="/friends">
-          <Group width="1.5em" />
+          <Group width="1.4em" />
         </a>
       </div>
       <div class="m-auto p-1 rounded-full bg-base-100 bg-opacity-10">
         <a use:link href={`/u/${$keys.pub}`}>
-          <User width="1.5em" />
+          <User width="1.4em" />
         </a>
       </div>
     </div>

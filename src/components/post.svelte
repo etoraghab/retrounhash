@@ -53,9 +53,11 @@
   style="display: {deleted};"
   class="bg-base-100 flex-col border border-blue-600 border-opacity-10 bg-opacity-6 p-2 w-full md:w-1/2 lg:w-1/3 rounded-xl flex gap-2"
 >
-  <!-- svelte-ignore a11y-click-events-have-key-events -->
   <div class="flex gap-2">
     <img
+      on:keypress={() => {
+        push(`/u/${data.pub}`);
+      }}
       on:click={() => {
         push(`/u/${data.pub}`);
       }}

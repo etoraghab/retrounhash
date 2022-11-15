@@ -84,15 +84,17 @@
           }}
           class="bg-base-100 border border-blue-600 border-opacity-10 bg-opacity-6 p-2 w-full md:w-1/2 lg:w-1/3 rounded-xl flex gap-2"
         >
-          <!-- svelte-ignore a11y-click-events-have-key-events -->
-          <img
+          <button
             on:click={() => {
               push(`/u/${f.pub}`);
             }}
-            src={f.avatar}
-            class="rounded-full w-10 h-10 aspect-square object-cover cursor-pointer"
-            alt=""
-          />
+          >
+            <img
+              src={f.avatar}
+              class="rounded-full w-10 h-10 aspect-square object-cover cursor-pointer"
+              alt=""
+            />
+          </button>
           <div class="text-xs break-all w-full flex flex-col">
             <div class="flex w-full">
               <div class="text-md truncate">@{f.username}</div>
