@@ -14,7 +14,7 @@
   <div class="flex toast h-auto justify-end items-end">
     {#if toastDetail.icon == "success"}
       <div
-        class="bg-success backdrop-blur-sm bg-opacity-10 text-success inline-flex flex-shrink-0
+        class="bg-success backdrop-blur-md bg-opacity-10 text-success inline-flex flex-shrink-0
           justify-center items-center min-w-8 h-8 rounded-md"
       >
         <svg
@@ -39,7 +39,7 @@
       </div>
     {:else if toastDetail.icon == "error"}
       <div
-        class="inline-flex backdrop-blur-sm flex-shrink-0 justify-center items-center min-w-8 h-8
+        class="inline-flex backdrop-blur-md flex-shrink-0 justify-center items-center min-w-8 h-8
           bg-error bg-opacity-10 text-error rounded-md"
       >
         <svg
