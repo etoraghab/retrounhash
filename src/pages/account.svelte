@@ -195,7 +195,7 @@
           </span>
         </div>
       </div>
-      {#if isFollowingUser}
+      {#if isFollowingUser && $location !== `/u/${$keys.pub}`}
         <div class="dropdown dropdown-left">
           <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
           <!-- svelte-ignore a11y-label-has-associated-control -->
