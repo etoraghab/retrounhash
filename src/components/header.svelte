@@ -60,27 +60,29 @@
         pub: $keys.pub,
       })
       .once(async (data) => {
-        hashtags.forEach(async (tag) => {
-          let soul = Gun.node.soul(data);
-          let hash = await SEA.work(soul, null, null, { name: "SHA-256" });
-          await db.get(tag).get(hash).put(soul);
-        });
+        // hashtags.forEach(async (tag) => {
+        //   console.log(tag);
+        //   let soul = Gun.node.soul(data);
+        //   let hash = await SEA.work(soul, null, null, { name: "SHA-256" });
+        //   await db.get(tag).get(hash).put(soul);
+        // });
 
-        let array1 = Array(postContent.split(" "));
-        for (let index = 0; index < array1[0].length; index++) {
-          const element = array1[0][index];
-          if (String(element).length < 2) {
-            return;
+        postContent = postContent.replace(/(\,|\.)/g, "");
+        let array1 = postContent.split(" ");
+        console.log(array1);
+        array1.forEach(async (element) => {
+          if (element.length > 2) {
+            console.log(element, element.length);
+            let soul = Gun.node.soul(data);
+            let hash = await SEA.work(soul, null, null, { name: "SHA-256" });
+            await db
+              .get("search")
+              .get("query")
+              .get(`#${String(element).toLowerCase()}`)
+              .get(hash)
+              .put(soul);
           }
-          let soul = Gun.node.soul(data);
-          let hash = await SEA.work(soul, null, null, { name: "SHA-256" });
-          await db
-            .get("search")
-            .get("query")
-            .get(`#${String(element).toLowerCase()}`)
-            .get(hash)
-            .put(soul);
-        }
+        });
 
         postContent = undefined;
         postImage = undefined;
