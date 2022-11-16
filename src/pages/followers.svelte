@@ -9,7 +9,8 @@
   const pub = params.pub;
   let loading = true;
 
-  let followers_graph = db.user(pub).get("followers");
+  let user_graph = db.user(pub);
+  let followers_graph = user_graph.get("followers");
   followers_graph
     .map()
     .once(async (val, pub_f) => {
@@ -53,11 +54,9 @@
     });
 
   let user_main_name;
-  db.user(pub)
-    .get("alias")
-    .once((name) => {
-      user_main_name = name;
-    });
+  user_graph.get("alias").once((name) => {
+    user_main_name = name;
+  });
 </script>
 
 <div class="p-3">

@@ -109,7 +109,7 @@
   });
 
   let isFollowed;
-  let following_graph = db.user(pub).get("following").get(pub);
+  let following_graph = user_graph.get("following").get(pub);
   user
     .get("following")
     .get(pub)
@@ -136,7 +136,7 @@
     });
 
   let followers = 0;
-  let followers_graph = db.user(pub).get("followers");
+  let followers_graph = user_graph.get("followers");
   followers_graph.on(() => {
     followers = 0;
     followers_graph.map().once((val) => {
@@ -147,14 +147,12 @@
   });
 
   let certificate;
-  db.user(pub)
-    .get("followersCert")
-    .once((cert) => {
-      certificate = cert;
-    });
+  user_graph.get("followersCert").once((cert) => {
+    certificate = cert;
+  });
 
   let isFollowingUser;
-  db.user(pub)
+  user_graph
     .get("following")
     .get($keys.pub)
     .once((isFollowingUser_) => {
@@ -221,8 +219,7 @@
           <button
             on:click={async () => {
               await user.get("following").get(pub).put(true);
-              await db
-                .user(pub)
+              user_graph
                 .get("followers")
                 .get($keys.pub)
                 .put(true, null, {
@@ -239,8 +236,7 @@
           <button
             on:click={async () => {
               await user.get("following").get(pub).put(false);
-              await db
-                .user(pub)
+              user_graph
                 .get("followers")
                 .get($keys.pub)
                 .put(false, null, {
