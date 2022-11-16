@@ -7,12 +7,13 @@
   import Explore from "./pages/explore.svelte";
   import AccountRender from "./pages/accountRender.svelte";
   import SearchRenderer from "./pages/searchRenderer.svelte";
-  import { user, username } from "./lib/gun";
+  import { db as database, db, keys, user } from "./lib/gun";
   import { onMount } from "svelte";
   import Toast from "./components/toast.svelte";
   import People from "./pages/people.svelte";
   import Following from "./pages/following.svelte";
   import Followers from "./pages/followers.svelte";
+
   /**
    * theme management
    */

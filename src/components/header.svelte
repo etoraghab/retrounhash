@@ -16,12 +16,14 @@
     Search,
     Cog,
     Camera,
+    PhoneCall,
   } from "@svicons/boxicons-regular";
   import { reveal } from "svelte-reveal";
   import { v4 } from "uuid";
   import { SEA } from "gun";
   import Settings from "./settings.svelte";
   import { toast } from "./toast";
+  import { peer } from "../lib/peer";
 
   if (!user.is) {
     push("/");
@@ -61,7 +63,6 @@
       })
       .once(async (data) => {
         // hashtags.forEach(async (tag) => {
-        //   console.log(tag);
         //   let soul = Gun.node.soul(data);
         //   let hash = await SEA.work(soul, null, null, { name: "SHA-256" });
         //   await db.get(tag).get(hash).put(soul);
@@ -69,10 +70,8 @@
 
         postContent = postContent.replace(/(\,|\.)/g, "");
         let array1 = postContent.split(" ");
-        console.log(array1);
         array1.forEach(async (element) => {
           if (element.length > 2) {
-            console.log(element, element.length);
             let soul = Gun.node.soul(data);
             let hash = await SEA.work(soul, null, null, { name: "SHA-256" });
             await db
@@ -198,6 +197,35 @@
     };
     reader.readAsDataURL(file);
   }
+
+  let callingUserData = {};
+  let calling;
+  let callAnswered;
+  let call__;
+  let selfvideo = null;
+  let othervideo = null;
+  peer.on("call", async (e) => {
+    let callerData = e.metadata;
+    var secret = await SEA.secret(callerData.epub, $keys);
+    let publicKey = await SEA.decrypt(callerData.sign, secret);
+    if (publicKey == callerData.pub) {
+      calling = true;
+      let graph = db.user(publicKey);
+      graph.get("alias").once((name) => {
+        callingUserData["name"] = name;
+      });
+      graph.get("displayImage").once((img) => {
+        callingUserData["img"] =
+          img ||
+          `https://avatars.dicebear.com/api/initials/${callingUserData.name}.svg`;
+      });
+      call__ = e;
+      e.on("stream", (s) => {
+        console.log(s);
+        othervideo.srcObject = s;
+      });
+    }
+  });
 </script>
 
 <div class="flex justify-center items-center w-full">
@@ -409,32 +437,109 @@
 </div>
 
 <div class="flex justify-center items-center w-full">
-  <div class="w-2/3 md:w-1/4 lg:w-1/5 h-auto fixed bottom-0 gap-2 ">
-    <div
-      class="m-2 border border-blue-700 border-opacity-40 p-1 flex backdrop-blur-sm rounded-full bg-base-100 bg-opacity-80"
-    >
-      <div class="m-auto p-1 rounded-full bg-base-100 bg-opacity-10">
-        <a use:link href="/home">
-          <Home width="1.4em" />
-        </a>
-      </div>
-      <div class="m-auto p-1 rounded-full bg-base-100 bg-opacity-10">
-        <a use:link href="/explore">
-          <Compass width="1.4em" />
-        </a>
-      </div>
-      <div class="m-auto p-1 rounded-full bg-base-100 bg-opacity-10">
-        <a use:link href="/friends">
-          <Group width="1.4em" />
-        </a>
-      </div>
-      <div class="m-auto p-1 rounded-full bg-base-100 bg-opacity-10">
-        <a use:link href={`/u/${$keys.pub}`}>
-          <User width="1.4em" />
-        </a>
+  {#if calling}
+    <div class="w-4/5 md:w-1/2 lg:w-2/5 h-auto fixed bottom-0 gap-2 ">
+      <div
+        class="m-2 border border-blue-700 border-opacity-40 p-1 flex flex-col backdrop-blur-sm bg-base-100 bg-opacity-80 {callAnswered
+          ? 'rounded-md'
+          : 'rounded-full'}"
+      >
+        <!-- svelte-ignore a11y-media-has-caption -->
+        {#if callAnswered}
+          <video
+            class="h-auto w-full rounded-md mb-2"
+            bind:this={othervideo}
+            autoplay
+          />
+          <video
+            class="h-auto w-full rounded-md mb-2"
+            bind:this={selfvideo}
+            autoplay
+            muted
+          />
+        {/if}
+        <div
+          class="m-auto justify-center items-center w-full p-1 flex gap-2 rounded-full bg-base-100 bg-opacity-10"
+        >
+          <img
+            src={callingUserData.img}
+            class="w-10 h-10 rounded-full object-cover"
+            alt=""
+          />
+          {callingUserData.name}
+          <div class="m-auto mr-1 flex gap-1">
+            {#if !callAnswered}
+              <button
+                class="btn btn-xs btn-success"
+                on:click={() => {
+                  navigator.mediaDevices
+                    .getUserMedia({
+                      video: {
+                        width: 480,
+                        height: 360,
+                      },
+                      audio: true,
+                    })
+                    .then(async (stream) => {
+                      callAnswered = true;
+                      selfvideo.srcObject = stream;
+                      call__.answer(stream);
+                    });
+                }}
+              >
+                <PhoneCall width="1.2em" />
+              </button>
+            {/if}
+            <div class="m-auto mr-1">
+              <button
+                class="btn btn-xs btn-error"
+                on:click={() => {
+                  calling = false;
+                  call__.close();
+
+                  callingUserData = {};
+                  calling = false;
+                  callAnswered = false;
+                  call__ = null;
+                  selfvideo = null;
+                  othervideo = null;
+                }}
+              >
+                end
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
+  {:else}
+    <div class="w-2/3 md:w-1/4 lg:w-1/5 h-auto fixed bottom-0 gap-2 ">
+      <div
+        class="m-2 border border-blue-700 border-opacity-40 p-1 flex backdrop-blur-sm rounded-full bg-base-100 bg-opacity-80"
+      >
+        <div class="m-auto p-1 rounded-full bg-base-100 bg-opacity-10">
+          <a use:link href="/home">
+            <Home width="1.4em" />
+          </a>
+        </div>
+        <div class="m-auto p-1 rounded-full bg-base-100 bg-opacity-10">
+          <a use:link href="/explore">
+            <Compass width="1.4em" />
+          </a>
+        </div>
+        <div class="m-auto p-1 rounded-full bg-base-100 bg-opacity-10">
+          <a use:link href="/friends">
+            <Group width="1.4em" />
+          </a>
+        </div>
+        <div class="m-auto p-1 rounded-full bg-base-100 bg-opacity-10">
+          <a use:link href={`/u/${$keys.pub}`}>
+            <User width="1.4em" />
+          </a>
+        </div>
+      </div>
+    </div>
+  {/if}
 </div>
 <div class="h-14" />
 

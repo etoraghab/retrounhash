@@ -46,6 +46,7 @@
     "dompurify": "^2.4.0",
     "gun": "^0.2020.1237",
     "moment": "^2.29.4",
+    "peerjs": "^1.4.7",
     "sirv-cli": "^2.0.2",
     "svelte-reveal": "^0.7.0",
     "svelte-spa-router": "^3.3.0",

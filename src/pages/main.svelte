@@ -71,7 +71,6 @@
                           null,
                           {}
                         );
-                        console.log(cert);
                         await user.get("followersCert").put(cert);
                         toast("success");
                       });

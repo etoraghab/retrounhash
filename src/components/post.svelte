@@ -8,7 +8,6 @@
   import { parse as parseEm } from "twemoji-parser";
   import { TrashAlt, X } from "@svicons/boxicons-regular";
   import { user } from "../lib/gun";
-  import { transition_in } from "svelte/internal";
 
   function parseEmoji(str) {
     const entities = parseEm(str);
@@ -45,11 +44,6 @@
 </script>
 
 <div
-  use:reveal={{
-    duration: 500,
-    easing: "easeInBack",
-    transition: "fade",
-  }}
   style="display: {deleted};"
   class="bg-base-100 flex-col border border-blue-600 border-opacity-10 bg-opacity-6 p-2 w-full md:w-1/2 lg:w-1/3 rounded-xl flex gap-2"
 >

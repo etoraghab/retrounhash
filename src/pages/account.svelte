@@ -3,6 +3,10 @@
   import Post from "../components/post.svelte";
   import { db, keys, user, username as username_ } from "../lib/gun";
   import { location, push } from "svelte-spa-router";
+  import Peer from "peerjs";
+  import { peer } from "../lib/peer";
+  import { DotsVerticalRounded } from "@svicons/boxicons-regular";
+  import { SEA } from "gun";
   require("@tensorflow/tfjs");
   const toxicity = require("@tensorflow-models/toxicity");
 
@@ -148,6 +152,45 @@
     .once((cert) => {
       certificate = cert;
     });
+
+  let userID;
+  db.user(pub)
+    .get("call")
+    .get("id")
+    .on((id) => {
+      userID = id;
+    });
+
+  function call() {
+    navigator.mediaDevices
+      .getUserMedia({
+        video: {
+          width: 480,
+          height: 360,
+        },
+        audio: true,
+      })
+      .then(async (stream) => {
+        await db
+          .user(pub)
+          .get("epub")
+          .once(async (epub) => {
+            let secret = await SEA.secret(epub, $keys);
+            let item = await SEA.encrypt($keys.pub, secret);
+            let call = peer.call(userID, stream, {
+              metadata: {
+                pub: $keys.pub,
+                sign: item,
+                epub: $keys.epub,
+              },
+            });
+
+            call.on("stream", (stream) => {
+              console.log(stream);
+            });
+          });
+      });
+  }
 </script>
 
 <div class="flex justify-center items-center">
@@ -168,6 +211,23 @@
             @{username}
           </span>
         </div>
+      </div>
+      <div class="dropdown dropdown-left">
+        <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
+        <!-- svelte-ignore a11y-label-has-associated-control -->
+        <label tabindex="0" class="btn btn-xs btn-ghost m-1">
+          <DotsVerticalRounded width="1.5em" />
+        </label>
+        <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
+        <ul
+          tabindex="0"
+          class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52"
+        >
+          <!-- svelte-ignore a11y-missing-attribute -->
+          <li>
+            <button on:click={call}> call </button>
+          </li>
+        </ul>
       </div>
     </div>
     <div class="flex flex-col justify-center items-center">
