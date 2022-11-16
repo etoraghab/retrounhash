@@ -153,6 +153,15 @@
       certificate = cert;
     });
 
+  let isFollowingUser;
+  db.user(pub)
+    .get("following")
+    .get($keys.pub)
+    .once((isFollowingUser_) => {
+      isFollowingUser = isFollowingUser_;
+      console.log(isFollowingUser);
+    });
+
   function call() {
     var event = new CustomEvent("call", {
       detail: {
@@ -187,23 +196,25 @@
           </span>
         </div>
       </div>
-      <div class="dropdown dropdown-left">
-        <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
-        <!-- svelte-ignore a11y-label-has-associated-control -->
-        <label tabindex="0" class="btn btn-xs btn-ghost m-1">
-          <DotsVerticalRounded width="1.5em" />
-        </label>
-        <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
-        <ul
-          tabindex="0"
-          class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52"
-        >
-          <!-- svelte-ignore a11y-missing-attribute -->
-          <li>
-            <button on:click={call}> call </button>
-          </li>
-        </ul>
-      </div>
+      {#if isFollowingUser}
+        <div class="dropdown dropdown-left">
+          <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
+          <!-- svelte-ignore a11y-label-has-associated-control -->
+          <label tabindex="0" class="btn btn-xs btn-ghost m-1">
+            <DotsVerticalRounded width="1.5em" />
+          </label>
+          <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
+          <ul
+            tabindex="0"
+            class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52"
+          >
+            <!-- svelte-ignore a11y-missing-attribute -->
+            <li>
+              <button on:click={call}> call </button>
+            </li>
+          </ul>
+        </div>
+      {/if}
     </div>
     <div class="flex flex-col justify-center items-center">
       {#if $location !== `/u/${$keys.pub}`}
