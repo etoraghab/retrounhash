@@ -159,7 +159,6 @@
     .get($keys.pub)
     .once((isFollowingUser_) => {
       isFollowingUser = isFollowingUser_;
-      console.log(isFollowingUser);
     });
 
   function call() {

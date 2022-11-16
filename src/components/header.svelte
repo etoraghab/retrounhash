@@ -205,26 +205,35 @@
   let selfvideo;
   let othervideo;
   peer.on("call", async (e) => {
-    let callerData = e.metadata;
-    var secret = await SEA.secret(callerData.epub, $keys);
-    let publicKey = await SEA.decrypt(callerData.sign, secret);
-    if (publicKey == callerData.pub) {
-      calling = true;
-      let graph = db.user(publicKey);
-      graph.get("alias").once((name) => {
-        callingUserData["name"] = name;
+    let userIsFollowed;
+    user
+      .get("following")
+      .get(e.metadata.pub)
+      .once((isNot) => {
+        userIsFollowed = isNot;
       });
-      graph.get("displayImage").once((img) => {
-        callingUserData["img"] =
-          img ||
-          `https://avatars.dicebear.com/api/initials/${callingUserData.name}.svg`;
-      });
-      call__ = e;
-      e.on("stream", (s) => {
-        setTimeout(() => {
-          othervideo.srcObject = s;
-        }, 2000);
-      });
+    if (userIsFollowed) {
+      let callerData = e.metadata;
+      var secret = await SEA.secret(callerData.epub, $keys);
+      let publicKey = await SEA.decrypt(callerData.sign, secret);
+      if (publicKey == callerData.pub) {
+        calling = true;
+        let graph = db.user(publicKey);
+        graph.get("alias").once((name) => {
+          callingUserData["name"] = name;
+        });
+        graph.get("displayImage").once((img) => {
+          callingUserData["img"] =
+            img ||
+            `https://avatars.dicebear.com/api/initials/${callingUserData.name}.svg`;
+        });
+        call__ = e;
+        e.on("stream", (s) => {
+          setTimeout(() => {
+            othervideo.srcObject = s;
+          }, 2000);
+        });
+      }
     }
   });
 
@@ -237,7 +246,6 @@
       .once((id) => {
         userID = id;
       });
-    console.log(e);
     navigator.mediaDevices
       .getUserMedia({
         video: {
