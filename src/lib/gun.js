@@ -11,7 +11,10 @@ export const db = GUN({
 export const user = db.user().recall({ sessionStorage: true });
 export const username = writable()
 export const keys = writable({
-  pub: ""
+  pub: "",
+  epub: "",
+  epriv: "",
+  priv: ""
 })
 db.on("auth", () => {
   localStorage.setItem("keys", JSON.stringify(user._.sea))

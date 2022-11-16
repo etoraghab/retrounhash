@@ -153,43 +153,18 @@
       certificate = cert;
     });
 
-  let userID;
-  db.user(pub)
-    .get("call")
-    .get("id")
-    .on((id) => {
-      userID = id;
+  function call() {
+    var event = new CustomEvent("call", {
+      detail: {
+        pub: pub,
+        name: username,
+        img:
+          user_img ||
+          `https://avatars.dicebear.com/api/initials/${username}.svg`,
+      },
     });
 
-  function call() {
-    navigator.mediaDevices
-      .getUserMedia({
-        video: {
-          width: 480,
-          height: 360,
-        },
-        audio: true,
-      })
-      .then(async (stream) => {
-        await db
-          .user(pub)
-          .get("epub")
-          .once(async (epub) => {
-            let secret = await SEA.secret(epub, $keys);
-            let item = await SEA.encrypt($keys.pub, secret);
-            let call = peer.call(userID, stream, {
-              metadata: {
-                pub: $keys.pub,
-                sign: item,
-                epub: $keys.epub,
-              },
-            });
-
-            call.on("stream", (stream) => {
-              console.log(stream);
-            });
-          });
-      });
+    document.dispatchEvent(event);
   }
 </script>
 
