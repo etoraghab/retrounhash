@@ -4,14 +4,13 @@
   import Loading from "../components/loading.svelte";
   import { db, user } from "../lib/gun";
 
-  let following = [];
-  let following_no = 0;
+  let followers = [];
   export let params;
   const pub = params.pub;
   let loading = true;
 
-  let following_graph = db.user(pub).get("following");
-  following_graph
+  let followers_graph = db.user(pub).get("followers");
+  followers_graph
     .map()
     .once(async (val, pub_f) => {
       if (val == true && pub_f !== pub) {
@@ -35,8 +34,7 @@
           user_image = pic;
         });
 
-        following_no += 1;
-        following = [
+        followers = [
           {
             name: user_name,
             pub: pub_f,
@@ -46,7 +44,7 @@
               user_image ||
               `https://avatars.dicebear.com/api/initials/${user_name}.svg`,
           },
-          ...following,
+          ...followers,
         ];
       }
     })
@@ -68,14 +66,9 @@
       <Loading />
     {:else}
       <div class="capitalize text-xl">
-        {"@" + user_main_name} is following {following_no}
-        {#if following_no > 1}
-          users
-        {:else}
-          user
-        {/if}
+        {"@" + user_main_name} is being followed by
       </div>
-      {#each following as f}
+      {#each followers as f}
         <div
           use:reveal={{
             duration: 200,

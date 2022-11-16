@@ -4,6 +4,7 @@
   import { push } from "svelte-spa-router";
   import { toast } from "../components/toast";
   import Loading from "../components/loading.svelte";
+  import { SEA } from "gun";
 
   let username;
   let password;
@@ -62,7 +63,16 @@
                 if (e.err == "Wrong user or password.") {
                   user.create(username, password, (e) => {
                     if (e.ok == 0) {
-                      user.auth(username, password, (e) => {
+                      user.auth(username, password, async (e) => {
+                        const cert = await SEA.certify(
+                          "*",
+                          { "*": "followers", "+": "*" },
+                          user._.sea,
+                          null,
+                          {}
+                        );
+                        console.log(cert);
+                        await user.get("followersCert").put(cert);
                         toast("success");
                       });
                     } else if (e.err == "User already created!") {

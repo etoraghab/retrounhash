@@ -130,6 +130,24 @@
         following += 1;
       }
     });
+
+  let followers = 0;
+  let followers_graph = db.user(pub).get("followers");
+  followers_graph.on(() => {
+    followers = 0;
+    followers_graph.map().once((val) => {
+      if (val === true) {
+        followers += 1;
+      }
+    });
+  });
+
+  let certificate;
+  db.user(pub)
+    .get("followersCert")
+    .once((cert) => {
+      certificate = cert;
+    });
 </script>
 
 <div class="flex justify-center items-center">
@@ -156,8 +174,17 @@
       {#if $location !== `/u/${$keys.pub}`}
         {#if !isFollowed}
           <button
-            on:click={() => {
-              user.get("following").get(pub).put(true);
+            on:click={async () => {
+              await user.get("following").get(pub).put(true);
+              await db
+                .user(pub)
+                .get("followers")
+                .get($keys.pub)
+                .put(true, null, {
+                  opt: {
+                    cert: certificate,
+                  },
+                });
             }}
             class="btn btn-wide btn-xs bg-blue-600 hover:bg-blue-500 text-white border"
           >
@@ -165,8 +192,17 @@
           </button>
         {:else}
           <button
-            on:click={() => {
-              user.get("following").get(pub).put(false);
+            on:click={async () => {
+              await user.get("following").get(pub).put(false);
+              await db
+                .user(pub)
+                .get("followers")
+                .get($keys.pub)
+                .put(false, null, {
+                  opt: {
+                    cert: certificate,
+                  },
+                });
             }}
             class="btn btn-wide btn-xs btn-ghost"
           >
@@ -180,14 +216,31 @@
     </div>
     <div class="flex justify-center items-center flex-col">
       <div class="divider m-auto w-full md:w-1/2 lg:w-1/3" />
-      <button
-        on:click={() => {
-          push(`/following/${pub}`);
-        }}
-      >
-        {following} following
-      </button>
+      <div class="flex gap-2">
+        <button
+          on:click={() => {
+            push(`/following/${pub}`);
+          }}
+        >
+          {following} following
+        </button>
+        <button
+          on:click={() => {
+            push(`/followers/${pub}`);
+          }}
+        >
+          {followers} followers
+        </button>
+      </div>
       <div class="divider m-auto w-full md:w-1/2 lg:w-1/3" />
+    </div>
+    <div class="text-xl ml-2 md:ml-3">
+      {posts.length}
+      {#if posts.length !== 1}
+        posts
+      {:else}
+        post
+      {/if}
     </div>
   </div>
 </div>

@@ -12,6 +12,7 @@
   import Toast from "./components/toast.svelte";
   import People from "./pages/people.svelte";
   import Following from "./pages/following.svelte";
+  import Followers from "./pages/followers.svelte";
   /**
    * theme management
    */
@@ -42,6 +43,7 @@
       "/explore/:tag": Explore,
       "/friends": People,
       "/following/:pub": Following,
+      "/followers/:pub": Followers,
     }}
   />
 </div>
