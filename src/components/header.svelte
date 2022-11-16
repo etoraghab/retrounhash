@@ -202,8 +202,8 @@
   let calling;
   let callAnswered;
   let call__;
-  let selfvideo = null;
-  let othervideo = null;
+  let selfvideo;
+  let othervideo;
   peer.on("call", async (e) => {
     let callerData = e.metadata;
     var secret = await SEA.secret(callerData.epub, $keys);
@@ -222,7 +222,9 @@
       call__ = e;
       e.on("stream", (s) => {
         console.log(s);
-        othervideo.srcObject = s;
+        setTimeout(() => {
+          othervideo.srcObject = s;
+        }, 2000);
       });
     }
   });
@@ -445,19 +447,17 @@
           : 'rounded-full'}"
       >
         <!-- svelte-ignore a11y-media-has-caption -->
-        {#if callAnswered}
-          <video
-            class="h-auto w-full rounded-md mb-2"
-            bind:this={othervideo}
-            autoplay
-          />
-          <video
-            class="h-auto w-full rounded-md mb-2"
-            bind:this={selfvideo}
-            autoplay
-            muted
-          />
-        {/if}
+        <video
+          class="h-auto w-full rounded-md mb-2"
+          bind:this={othervideo}
+          autoplay
+        />
+        <video
+          class="h-auto w-full rounded-md mb-2"
+          bind:this={selfvideo}
+          autoplay
+          muted
+        />
         <div
           class="m-auto justify-center items-center w-full p-1 flex gap-2 rounded-full bg-base-100 bg-opacity-10"
         >
@@ -482,7 +482,9 @@
                     })
                     .then(async (stream) => {
                       callAnswered = true;
-                      selfvideo.srcObject = stream;
+                      setTimeout(() => {
+                        selfvideo.srcObject = stream;
+                      }, 2000);
                       call__.answer(stream);
                     });
                 }}
