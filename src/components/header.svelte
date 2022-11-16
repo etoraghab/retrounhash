@@ -202,29 +202,87 @@
   let calling;
   let callAnswered;
   let call__;
-  let selfvideo = null;
-  let othervideo = null;
+  let selfvideo;
+  let othervideo;
   peer.on("call", async (e) => {
-    let callerData = e.metadata;
-    var secret = await SEA.secret(callerData.epub, $keys);
-    let publicKey = await SEA.decrypt(callerData.sign, secret);
-    if (publicKey == callerData.pub) {
-      calling = true;
-      let graph = db.user(publicKey);
-      graph.get("alias").once((name) => {
-        callingUserData["name"] = name;
+    let userIsFollowed;
+    user
+      .get("following")
+      .get(e.metadata.pub)
+      .once((isNot) => {
+        userIsFollowed = isNot;
       });
-      graph.get("displayImage").once((img) => {
-        callingUserData["img"] =
-          img ||
-          `https://avatars.dicebear.com/api/initials/${callingUserData.name}.svg`;
-      });
-      call__ = e;
-      e.on("stream", (s) => {
-        console.log(s);
-        othervideo.srcObject = s;
-      });
+    if (userIsFollowed) {
+      let callerData = e.metadata;
+      var secret = await SEA.secret(callerData.epub, $keys);
+      let publicKey = await SEA.decrypt(callerData.sign, secret);
+      if (publicKey == callerData.pub) {
+        calling = true;
+        let graph = db.user(publicKey);
+        graph.get("alias").once((name) => {
+          callingUserData["name"] = name;
+        });
+        graph.get("displayImage").once((img) => {
+          callingUserData["img"] =
+            img ||
+            `https://avatars.dicebear.com/api/initials/${callingUserData.name}.svg`;
+        });
+        call__ = e;
+        e.on("stream", (s) => {
+          setTimeout(() => {
+            othervideo.srcObject = s;
+          }, 2000);
+        });
+      }
     }
+  });
+
+  document.addEventListener("call", (e) => {
+    let pub = e.detail.pub;
+    let userID;
+    db.user(pub)
+      .get("call")
+      .get("id")
+      .once((id) => {
+        userID = id;
+      });
+    navigator.mediaDevices
+      .getUserMedia({
+        video: {
+          width: 256,
+          height: 144,
+        },
+        audio: true,
+      })
+      .then(async (stream) => {
+        setTimeout(() => {
+          selfvideo.srcObject = stream;
+        }, 2000);
+        await db
+          .user(pub)
+          .get("epub")
+          .once(async (epub) => {
+            let secret = await SEA.secret(epub, $keys);
+            let item = await SEA.encrypt($keys.pub, secret);
+            let call = peer.call(userID, stream, {
+              metadata: {
+                pub: $keys.pub,
+                sign: item,
+                epub: $keys.epub,
+              },
+            });
+
+            call.on("stream", (s) => {
+              callingUserData.name = e.detail.name;
+              callingUserData.img = e.detail.img;
+              callAnswered = true;
+              calling = true;
+              setTimeout(() => {
+                othervideo.srcObject = s;
+              }, 2000);
+            });
+          });
+      });
   });
 </script>
 
@@ -446,17 +504,20 @@
       >
         <!-- svelte-ignore a11y-media-has-caption -->
         {#if callAnswered}
-          <video
-            class="h-auto w-full rounded-md mb-2"
-            bind:this={othervideo}
-            autoplay
-          />
-          <video
-            class="h-auto w-full rounded-md mb-2"
-            bind:this={selfvideo}
-            autoplay
-            muted
-          />
+          <div class="flex flex-col justify-center items-center mb-2">
+            <video
+              class="max-h-96 rounded-md"
+              bind:this={othervideo}
+              autoplay
+            />
+            <video
+              style="right: 10px;bottom: 3.7rem;"
+              class="h-14 fixed object-cover rounded-md"
+              bind:this={selfvideo}
+              autoplay
+              muted
+            />
+          </div>
         {/if}
         <div
           class="m-auto justify-center items-center w-full p-1 flex gap-2 rounded-full bg-base-100 bg-opacity-10"
@@ -475,14 +536,16 @@
                   navigator.mediaDevices
                     .getUserMedia({
                       video: {
-                        width: 480,
-                        height: 360,
+                        width: 256,
+                        height: 144,
                       },
                       audio: true,
                     })
                     .then(async (stream) => {
                       callAnswered = true;
-                      selfvideo.srcObject = stream;
+                      setTimeout(() => {
+                        selfvideo.srcObject = stream;
+                      }, 2000);
                       call__.answer(stream);
                     });
                 }}

@@ -153,43 +153,26 @@
       certificate = cert;
     });
 
-  let userID;
+  let isFollowingUser;
   db.user(pub)
-    .get("call")
-    .get("id")
-    .on((id) => {
-      userID = id;
+    .get("following")
+    .get($keys.pub)
+    .once((isFollowingUser_) => {
+      isFollowingUser = isFollowingUser_;
     });
 
   function call() {
-    navigator.mediaDevices
-      .getUserMedia({
-        video: {
-          width: 480,
-          height: 360,
-        },
-        audio: true,
-      })
-      .then(async (stream) => {
-        await db
-          .user(pub)
-          .get("epub")
-          .once(async (epub) => {
-            let secret = await SEA.secret(epub, $keys);
-            let item = await SEA.encrypt($keys.pub, secret);
-            let call = peer.call(userID, stream, {
-              metadata: {
-                pub: $keys.pub,
-                sign: item,
-                epub: $keys.epub,
-              },
-            });
+    var event = new CustomEvent("call", {
+      detail: {
+        pub: pub,
+        name: username,
+        img:
+          user_img ||
+          `https://avatars.dicebear.com/api/initials/${username}.svg`,
+      },
+    });
 
-            call.on("stream", (stream) => {
-              console.log(stream);
-            });
-          });
-      });
+    document.dispatchEvent(event);
   }
 </script>
 
@@ -212,23 +195,25 @@
           </span>
         </div>
       </div>
-      <div class="dropdown dropdown-left">
-        <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
-        <!-- svelte-ignore a11y-label-has-associated-control -->
-        <label tabindex="0" class="btn btn-xs btn-ghost m-1">
-          <DotsVerticalRounded width="1.5em" />
-        </label>
-        <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
-        <ul
-          tabindex="0"
-          class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52"
-        >
-          <!-- svelte-ignore a11y-missing-attribute -->
-          <li>
-            <button on:click={call}> call </button>
-          </li>
-        </ul>
-      </div>
+      {#if isFollowingUser}
+        <div class="dropdown dropdown-left">
+          <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
+          <!-- svelte-ignore a11y-label-has-associated-control -->
+          <label tabindex="0" class="btn btn-xs btn-ghost m-1">
+            <DotsVerticalRounded width="1.5em" />
+          </label>
+          <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
+          <ul
+            tabindex="0"
+            class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52"
+          >
+            <!-- svelte-ignore a11y-missing-attribute -->
+            <li>
+              <button on:click={call}> call </button>
+            </li>
+          </ul>
+        </div>
+      {/if}
     </div>
     <div class="flex flex-col justify-center items-center">
       {#if $location !== `/u/${$keys.pub}`}
