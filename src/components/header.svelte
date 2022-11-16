@@ -221,7 +221,6 @@
       });
       call__ = e;
       e.on("stream", (s) => {
-        console.log(s);
         setTimeout(() => {
           othervideo.srcObject = s;
         }, 2000);
@@ -447,17 +446,22 @@
           : 'rounded-full'}"
       >
         <!-- svelte-ignore a11y-media-has-caption -->
-        <video
-          class="h-auto w-full rounded-md mb-2"
-          bind:this={othervideo}
-          autoplay
-        />
-        <video
-          class="h-auto w-full rounded-md mb-2"
-          bind:this={selfvideo}
-          autoplay
-          muted
-        />
+        {#if callAnswered}
+          <div class="flex flex-col justify-center items-center">
+            <video
+              class="max-h-96 rounded-md"
+              bind:this={othervideo}
+              autoplay
+            />
+            <video
+              style="right: 10px;bottom: 3.7rem;"
+              class="h-14 fixed object-cover rounded-md"
+              bind:this={selfvideo}
+              autoplay
+              muted
+            />
+          </div>
+        {/if}
         <div
           class="m-auto justify-center items-center w-full p-1 flex gap-2 rounded-full bg-base-100 bg-opacity-10"
         >
