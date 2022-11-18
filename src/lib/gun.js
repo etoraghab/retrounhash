@@ -4,7 +4,13 @@ import "gun/axe";
 import { writable } from "svelte/store";
 
 export const db = GUN({
-  peers: ["https://gun-ams1.cl0vr.co/gun", "http://localhost:8765/gun"],
+  peers: [
+    "https://gun-ams1.cl0vr.co/gun",
+    "https://gun-sashimi.herokuapp.com/gun",
+    'http://gun-matrix.herokuapp.com/gun',
+    'https://shockblox-gun-server.herokuapp.com/gun',
+    "http://localhost:8765/gun"
+  ],
   localStorage: false,
 });
 
