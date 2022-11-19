@@ -33,7 +33,7 @@
       class="text-center text-4xl font-mono"
       use:reveal={{ transition: "fade", delay: 50 }}
     >
-      verse
+      retrounhash
     </div>
     {#if loading}
       <Loading />

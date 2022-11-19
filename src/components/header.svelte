@@ -331,7 +331,7 @@
               push("/");
             }}
           >
-            verse
+            retrounhash
           </button>
         {/if}
 
