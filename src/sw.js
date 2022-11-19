@@ -13,7 +13,7 @@ precacheAndRoute(self.__WB_MANIFEST);
 registerRoute(
   /\/build\/bundle.js/,
   new CacheFirst({
-    cacheName: "js__v1.1.10",
+    cacheName: "js__v1.1.11",
     matchOptions: {
       ignoreVary: true,
     },
@@ -33,7 +33,7 @@ registerRoute(
 registerRoute(
   /\/build\/bundle.js/,
   new CacheFirst({
-    cacheName: "css__v1.1.10",
+    cacheName: "css__v1.1.11",
     matchOptions: {
       ignoreVary: true,
     },
@@ -53,7 +53,7 @@ registerRoute(
 registerRoute(
   /\/public\/images\/*.(png|jpg|jpeg)/,
   new CacheFirst({
-    cacheName: "images__v1.1.10",
+    cacheName: "images__v1.1.11",
     matchOptions: {
       ignoreVary: true,
     },
