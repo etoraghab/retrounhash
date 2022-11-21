@@ -1,11 +1,15 @@
 import GUN from "gun";
 import "gun/sea";
 import "gun/axe";
+import 'gun/lib/radix'
+import 'gun/lib/radisk'
+import 'gun/lib/store'
+import 'gun/lib/rindexed'
+
 import { writable } from "svelte/store";
 
 export const db = GUN({
   peers: [
-    "https://gun-ams1.cl0vr.co/gun",
     "https://gun-sashimi.herokuapp.com/gun",
     'http://gun-matrix.herokuapp.com/gun',
     'https://shockblox-gun-server.herokuapp.com/gun',

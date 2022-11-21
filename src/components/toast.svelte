@@ -71,7 +71,7 @@
   .toast {
     position: fixed;
     width: 100%;
-    z-index: 99999999999999999999999999999999999999999999999999;
+    z-index: 100;
     cursor: pointer;
   }
 </style>

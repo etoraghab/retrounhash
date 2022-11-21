@@ -6,7 +6,7 @@
   export let data;
   export let bold;
   import { parse as parseEm } from "twemoji-parser";
-  import { TrashAlt, X } from "@svicons/boxicons-regular";
+  import { Play, PlayCircle, TrashAlt, X } from "@svicons/boxicons-regular";
   import { user } from "../lib/gun";
 
   function parseEmoji(str) {
@@ -76,11 +76,29 @@
             overlay = true;
           }}
         >
-          <img
-            src={data.img}
-            class="w-full h-32 aspect-square rounded-md object-cover"
-            alt=""
-          />
+          {#if data.img.split("data:")[1].split("/")[0] == "image"}
+            <img
+              src={data.img}
+              class="w-full h-32 aspect-square rounded-md object-cover"
+              alt=""
+            />
+          {:else}
+            <div id="container" class="w-full h-32 object-cover">
+              <div
+                id="navi"
+                class="flex z-10 justify-center rounded-md items-center bg-base-100 bg-opacity-25 backdrop-blur-sm"
+              >
+                <Play width="2.6em" />
+              </div>
+              <div id="infoi" class="flex z-0 justify-center items-center">
+                <!-- svelte-ignore a11y-media-has-caption -->
+                <video
+                  class="rounded-md w-full object-cover h-32"
+                  src={data.img}
+                />
+              </div>
+            </div>
+          {/if}
         </button>
       {/if}
     </div>
@@ -125,7 +143,17 @@
         <X width="1em" />
       </button>
       <div class="grid bg-base-100 place-items-center rounded-md">
-        <img src={data.img} class="rounded-md md:max-w-96 max-h-96" alt="" />
+        {#if data.img.split("data:")[1].split("/")[0] == "image"}
+          <img src={data.img} class="rounded-md md:max-w-96 max-h-96" alt="" />
+        {:else}
+          <!-- svelte-ignore a11y-media-has-caption -->
+          <video
+            src={data.img}
+            class="rounded-md md:max-w-96 max-h-96"
+            autoplay
+            controls
+          />
+        {/if}
       </div>
     </div>
   </div>
@@ -140,7 +168,19 @@
     left: 0;
     right: 0;
     bottom: 0;
-    z-index: 2;
+    z-index: 10;
     cursor: pointer;
+  }
+
+  #container {
+    position: relative;
+  }
+  #navi,
+  #infoi {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
   }
 </style>

@@ -17,6 +17,7 @@
     Cog,
     Camera,
     PhoneCall,
+    VideoRecording,
   } from "@svicons/boxicons-regular";
   import { reveal } from "svelte-reveal";
   import { v4 } from "uuid";
@@ -102,6 +103,7 @@
       border_header = 50;
       height_header = 0;
     } else {
+      settingsOpen = false;
       border_header = 10;
       height_header = 24;
       profileEditMode = true;
@@ -115,6 +117,7 @@
       border_header = 50;
       height_header = 0;
     } else {
+      profileEditMode = false;
       writeMode = false; //open settings after closing writeMode
       border_header = 10;
       height_header = 30;
@@ -178,8 +181,15 @@
 
   let postImage;
 
+  var filePostUploadedType;
   function imageUploaded() {
     var file = document.querySelector("#avatar-chooser").files[0];
+
+    if (String(file.type).includes("video")) {
+      filePostUploadedType = "video";
+    } else {
+      filePostUploadedType = "photo";
+    }
 
     var reader = new FileReader();
     reader.onload = async function () {
@@ -286,16 +296,16 @@
   });
 </script>
 
-<div class="flex justify-center items-center w-full">
-  <div class="w-full md:w-1/2 lg:w-1/3 m-auto h-0 fixed gap-2 z-3">
+<div class="flex justify-center items-center w-full header__">
+  <div class="w-full md:w-1/2 lg:w-1/3 m-auto h-0 fixed gap-2 header__">
     <div
       class={writeMode || profileEditMode || settingsOpen == true
-        ? "bg-base-100 bg-opacity-90 backdrop-blur-sm"
+        ? "bg-base-100 header__ bg-opacity-90 backdrop-blur-sm"
         : ""}
       style="transition:all .5s;height: {height_header}rem;display: flex;flex-direction: column;margin: 0.75rem;border-radius: {border_header}px;"
     >
       <div
-        class=" p-2 flex border border-blue-600 border-opacity-40 transition-all duration-400 backdrop-blur-sm rounded-full 
+        class=" p-2 flex header__ border border-blue-600 border-opacity-40 transition-all duration-400 backdrop-blur-sm rounded-full 
         {writeMode || profileEditMode || settingsOpen == false
           ? 'bg-base-100'
           : ''} bg-opacity-80"
@@ -385,18 +395,31 @@
                     }}
                   >
                     <label for="avatar-chooser">
-                      <img
-                        class="rounded-md object-cover h-14 w-14"
-                        src={postImage}
-                        alt=""
-                      />
+                      {#if filePostUploadedType == "photo"}
+                        <img
+                          class="rounded-md object-cover h-14 w-14"
+                          src={postImage}
+                          alt=""
+                        />
+                        <!-- svelte-ignore a11y-media-has-caption -->
+                      {:else}
+                        <video
+                          class="rounded-md object-cover h-14 w-14"
+                          loop
+                          src={postImage}
+                          autoplay
+                          muted
+                        />
+                      {/if}
                     </label>
                   </button>
                 {:else}
                   <button
-                    class="p-3 mt-1 btn-ghost h-14 w-14 flex justify-center items-center rounded-md border transition-all duration-300 border-blue-600 hover:bg-blue-600 hover:bg-opacity-90 hover:text-white hover:text-opacity-90 border-opacity-30 focus:border-opacity-90"
+                    class="p-3 mt-1 btn-ghost h-14 w-auto flex justify-center items-center rounded-md border transition-all duration-300 border-blue-600 hover:bg-blue-600 hover:bg-opacity-90 hover:text-white hover:text-opacity-90 border-opacity-30 focus:border-opacity-90"
                   >
-                    <label for="avatar-chooser">
+                    <label for="avatar-chooser" class="flex gap-3">
+                      <VideoRecording width="1.5em" />
+                      <span class="font-extralight text-xl"> / </span>
                       <Camera width="1.5em" />
                     </label>
                   </button>
@@ -407,7 +430,7 @@
                   name="avatar-chooser"
                   id="avatar-chooser"
                   on:change={imageUploaded}
-                  accept="image/*"
+                  accept=".png, .jpg, .jpeg, .mp4, .webm, .mpg, .ogg, .mov, .avi, .gif, .raw"
                   class="hidden"
                 />
               </div>
@@ -496,7 +519,10 @@
 
 <div class="flex justify-center items-center w-full">
   {#if calling}
-    <div class="w-4/5 md:w-1/2 lg:w-2/5 h-auto fixed bottom-0 gap-2 ">
+    <div
+      class="w-4/5 md:w-1/2 lg:w-2/5 h-auto fixed bottom-0 gap-2"
+      style="z-index: 51;"
+    >
       <div
         class="m-2 border border-blue-700 border-opacity-40 p-1 flex flex-col backdrop-blur-sm bg-base-100 bg-opacity-80 {callAnswered
           ? 'rounded-md'
@@ -617,5 +643,10 @@
     box-shadow: none;
 
     resize: none; /*remove the resize handle on the bottom right*/
+  }
+
+  .bottom-0,
+  .header__ {
+    z-index: 51;
   }
 </style>
