@@ -130,7 +130,7 @@
       transition: "slide",
       duration: 200,
     }}
-    class="bg-base-100 flex justify-center items-center bg-opacity-50 backdrop-blur-md"
+    class="bg-base-100 z-20 flex justify-center items-center bg-opacity-50 backdrop-blur-md"
     id="overlay"
   >
     <div class="indicator m-3">
@@ -168,7 +168,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    z-index: 10;
+    z-index: 50;
     cursor: pointer;
   }
 
