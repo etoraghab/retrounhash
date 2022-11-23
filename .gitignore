@@ -2,3 +2,4 @@ node_modules
 pnpm-lock.yaml
 public/build/*
 yarn.lock
+/public/*.woff

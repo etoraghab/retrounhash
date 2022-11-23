@@ -331,7 +331,11 @@
           <div
             class="m-auto flex ml-1 p-1 rounded-full bg-base-100 bg-opacity-10"
           >
-            <button class="m-auto" on:click={openSettings}>
+            <button
+              class="m-auto"
+              on:click={openSettings}
+              aria-label="Settings"
+            >
               <Cog width="1.2em" />
             </button>
           </div>
@@ -607,22 +611,22 @@
         class="m-2 border border-blue-700 border-opacity-40 p-1 flex backdrop-blur-sm rounded-full bg-base-100 bg-opacity-80"
       >
         <div class="m-auto p-1 rounded-full bg-base-100 bg-opacity-10">
-          <a use:link href="/home">
+          <a use:link href="/home" aria-label="Home">
             <Home width="1.4em" />
           </a>
         </div>
         <div class="m-auto p-1 rounded-full bg-base-100 bg-opacity-10">
-          <a use:link href="/explore">
+          <a use:link href="/explore" aria-label="Explore">
             <Compass width="1.4em" />
           </a>
         </div>
         <div class="m-auto p-1 rounded-full bg-base-100 bg-opacity-10">
-          <a use:link href="/friends">
+          <a use:link href="/friends" aria-label="Friends">
             <Group width="1.4em" />
           </a>
         </div>
         <div class="m-auto p-1 rounded-full bg-base-100 bg-opacity-10">
-          <a use:link href={`/u/${$keys.pub}`}>
+          <a use:link href={`/u/${$keys.pub}`} aria-label="Account">
             <User width="1.4em" />
           </a>
         </div>
