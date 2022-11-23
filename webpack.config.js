@@ -1,3 +1,6 @@
+const BrotliPlugin = require("brotli-webpack-plugin");
+const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
+const TerserPlugin = require("terser-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const path = require("path");
 
@@ -53,7 +56,21 @@ module.exports = {
     new MiniCssExtractPlugin({
       filename: "[name].css",
     }),
+    new BrotliPlugin({
+      asset: "[path].br[query]",
+      test: /\.(js|css|html|svg)$/,
+      threshold: 10240,
+      minRatio: 0.7,
+    }),
   ],
+  optimization: {
+    minimize: true,
+    minimizer: [
+      new TerserPlugin(),
+      new CssMinimizerPlugin()
+    ],
+  },
+
   devtool: "source-map",
   devServer: {
     allowedHosts: "all",
