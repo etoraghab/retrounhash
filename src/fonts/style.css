@@ -4,4 +4,5 @@
     font-weight: normal;
     src: local("Product"),
         url("./ProductSans-Regular.woff") format("woff");
+    font-display: swap;
 }
