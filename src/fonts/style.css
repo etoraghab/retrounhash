@@ -1,8 +1,7 @@
 @font-face {
-    font-family: "Product";
-    font-style: normal;
-    font-weight: normal;
-    src: local("Product"),
-        url("./ProductSans-Regular.woff") format("woff");
-    font-display: swap;
+  font-family: "Product";
+  font-style: normal;
+  font-weight: normal;
+  src: local("Product"), url("./ProductSans-Regular.woff") format("woff");
+  font-display: swap;
 }

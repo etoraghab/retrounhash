@@ -3,20 +3,20 @@ module.exports = {
   theme: {
     extend: {},
   },
-  plugins: [require("daisyui"), require('@tailwindcss/line-clamp')],
+  plugins: [require("daisyui"), require("@tailwindcss/line-clamp")],
   daisyui: {
     themes: [
       {
         light: {
-          "primary": "#336ff2",
-          "secondary": "#336ff2",
-          "accent": "#336ff2",
-          "neutral": "#3D4451",
+          primary: "#336ff2",
+          secondary: "#336ff2",
+          accent: "#336ff2",
+          neutral: "#3D4451",
           "base-100": "#FFFFFF",
-          "info": "#336ff2",
-          "success": "#36D399",
-          "warning": "#FBBD23",
-          "error": "#F87272",
+          info: "#336ff2",
+          success: "#36D399",
+          warning: "#FBBD23",
+          error: "#F87272",
         },
       },
       {
@@ -27,7 +27,7 @@ module.exports = {
           accent: "#336ff2",
           info: "#336ff2",
         },
-      }
+      },
     ],
   },
 };

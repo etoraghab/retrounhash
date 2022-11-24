@@ -10,7 +10,7 @@
   const pub = params.pub;
   let loading = true;
 
-  let user_graph = db.user(pub)
+  let user_graph = db.user(pub);
   let following_graph = user_graph.get("following");
   following_graph
     .map()
@@ -56,11 +56,9 @@
     });
 
   let user_main_name;
-  user_graph
-    .get("alias")
-    .once((name) => {
-      user_main_name = name;
-    });
+  user_graph.get("alias").once((name) => {
+    user_main_name = name;
+  });
 </script>
 
 <div class="p-3">

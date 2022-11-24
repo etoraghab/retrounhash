@@ -2,8 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-@import './fonts/style.css';
+@import "./fonts/style.css";
 
 * {
-    font-family: 'Product';
+  font-family: "Product";
 }
