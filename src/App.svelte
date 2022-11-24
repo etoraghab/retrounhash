@@ -3,7 +3,7 @@
   import Router, { location, link } from "svelte-spa-router";
   import { wrap } from "svelte-spa-router/wrap";
   import Header from "./components/header.svelte";
-  import { db as database, db, keys, user } from "./lib/gun";
+  import { user } from "./lib/gun";
   import { onMount } from "svelte";
   import Toast from "./components/toast.svelte";
 

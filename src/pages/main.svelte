@@ -39,7 +39,7 @@
       <Loading />
     {:else}
       <input
-        use:reveal={{ transition: "fade", delay: 150 }}
+        use:reveal={{ transition: "fade", delay: 0 }}
         placeholder="username"
         type="text"
         bind:value={username}
@@ -47,7 +47,7 @@
       />
       <div class="flex flex-col gap-3">
         <input
-          use:reveal={{ transition: "fade", delay: 450 }}
+          use:reveal={{ transition: "fade", delay: 150 }}
           placeholder="password"
           type="password"
           bind:value={password}
@@ -56,7 +56,7 @@
 
         <div>
           <button
-            use:reveal={{ transition: "blur", delay: 1000 }}
+            use:reveal={{ transition: "blur", delay: 300 }}
             on:click={async () => {
               loading = true;
               await user.auth(username, password, (e) => {
