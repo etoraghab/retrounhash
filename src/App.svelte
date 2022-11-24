@@ -1,18 +1,11 @@
 <script>
   import "./style.css";
   import Router, { location, link } from "svelte-spa-router";
-  import Main from "./pages/main.svelte";
-  import Home from "./pages/home.svelte";
+  import { wrap } from "svelte-spa-router/wrap";
   import Header from "./components/header.svelte";
-  import Explore from "./pages/explore.svelte";
-  import AccountRender from "./pages/accountRender.svelte";
-  import SearchRenderer from "./pages/searchRenderer.svelte";
   import { db as database, db, keys, user } from "./lib/gun";
   import { onMount } from "svelte";
   import Toast from "./components/toast.svelte";
-  import People from "./pages/people.svelte";
-  import Following from "./pages/following.svelte";
-  import Followers from "./pages/followers.svelte";
 
   /**
    * theme management
@@ -46,14 +39,30 @@
   {/if}
   <Router
     routes={{
-      "/": Main,
-      "/home": Home,
-      "/u/:pub": AccountRender,
-      "/search/:query": SearchRenderer,
-      "/explore/:tag": Explore,
-      "/friends": People,
-      "/following/:pub": Following,
-      "/followers/:pub": Followers,
+      "/": wrap({
+        asyncComponent: () => import("./pages/main.svelte"),
+      }),
+      "/home": wrap({
+        asyncComponent: () => import("./pages/home.svelte"),
+      }),
+      "/u/:pub": wrap({
+        asyncComponent: () => import("./pages/accountRender.svelte"),
+      }),
+      "/search/:query": wrap({
+        asyncComponent: () => import("./pages/searchRenderer.svelte"),
+      }),
+      "/explore/:tag": wrap({
+        asyncComponent: () => import("./pages/explore.svelte"),
+      }),
+      "/friends": wrap({
+        asyncComponent: () => import("./pages/people.svelte"),
+      }),
+      "/following/:pub": wrap({
+        asyncComponent: () => import("./pages/following.svelte"),
+      }),
+      "/followers/:pub": wrap({
+        asyncComponent: () => import("./pages/followers.svelte"),
+      }),
     }}
   />
 </div>
