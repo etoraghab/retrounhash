@@ -10,9 +10,7 @@ import { writable } from "svelte/store";
 
 export const db = GUN({
   peers: [
-    "https://gun-sashimi.herokuapp.com/gun",
-    "http://gun-matrix.herokuapp.com/gun",
-    "https://shockblox-gun-server.herokuapp.com/gun",
+    "https://gunjs.herokuapp.com/gun",
     "http://localhost:8765/gun",
   ],
   localStorage: false,
