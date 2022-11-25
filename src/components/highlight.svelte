@@ -35,6 +35,12 @@
 
   let counter = 0;
 
+  function updatedCounter() {
+    progress = 0;
+  }
+
+  $: counter, updatedCounter();
+
   async function uploadHighlight() {
     var file = document.querySelector("#highlight-chooser").files[0];
 
@@ -83,17 +89,32 @@
 
   var timer = new Timer(function () {
     if (overlay) {
-      counter += 1;
+      if (counter + 1 !== h.length) {
+        counter += 1;
+      }
     }
   }, 5000);
   timer.start();
 
+  let progress = 0;
+
+  let timer_prog = new Timer(() => {
+    if (overlay) {
+      progress += 70;
+    }
+  }, 70);
+
   function stopTimer() {
     if (overlay) {
+      timer_prog.reset(100);
+      timer_prog.start();
       timer.reset(5000);
       timer.start();
     } else {
+      timer_prog.stop();
       timer.stop();
+      counter = 0;
+      progress = 0;
     }
   }
 
@@ -128,8 +149,12 @@
         />
         <div>
           <img
+            draggable="false"
             src={avatar}
-            class="h-14 w-14 object-cover rounded-full"
+            class="h-14 w-14 object-cover rounded-full 
+            {h.length !== 0
+              ? 'ring ring-blue-700 hover:ring-sky-700 transition-all duration-500'
+              : ''}"
             alt=""
           />
         </div>
@@ -175,19 +200,38 @@
     <div class="carousel h-full m-2 w-full md:w-1/2 lg:w-1/3">
       <div class="carousel-item relative w-full pt-2 pb-2">
         <div class="indicator h-full mb-3 w-full">
-          <button
-            on:click={() => {
-              overlay = false;
-            }}
-            class="indicator-item badge badge-ghost mr-2"
-          >
-            <X width="1em" />
-          </button>
           <img
             alt=""
             src={h[counter].img}
             class="w-full rounded-md object-cover"
           />
+        </div>
+        <!-- progress -->
+        <div
+          class="absolute flex flex-col justify-between transform -translate-y-1/2 w-full left-0 right-0 top-8"
+        >
+          <progress
+            class="progress progress-accent w-full caret-blue-600 h-2"
+            value={progress}
+            max="5000"
+          />
+          <div class="ml-auto mr-3">
+            <button
+              on:click={() => {
+                overlay = false;
+              }}
+              class="text-black btn btn-xs btn-ghost ml-auto mt-3 bg-white hover:bg-white bg-opacity-70 backdrop-blur-sm"
+            >
+              <X width="1.5em" />
+            </button>
+          </div>
+        </div>
+        <div
+          class="absolute flex justify-between transform -translate-y-1/2 w-full bottom-1/4 bg-black bg-opacity-60 backdrop-blur-sm text-white text-opacity-80 text-center"
+        >
+          <div class="text-center w-full">
+            {h[counter].caption}
+          </div>
         </div>
         <div
           class="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2"
@@ -219,20 +263,31 @@
           {/if}
         </div>
         {#if self}
-          <button
-            on:click={() => {
-              user
-                .get("highlights")
-                .get(h[counter].uid)
-                .put(null)
-                .then(() => {
-                  toast("success", "deleted");
-                });
-            }}
-            class="text-red-600 fixed bottom-4 right-4 btn btn-xs btn-ghost ml-auto mt-auto bg-white bg-opacity-70 backdrop-blur-sm"
+          <div
+            class="absolute flex justify-between transform -translate-y-1/2 w-full left-0 right-0 bottom-3"
           >
-            <TrashAlt width="1.5em" />
-          </button>
+            <button
+              on:click={async () => {
+                try {
+                  await user.get("highlights").get(h[counter].uid).put(null);
+                } catch (error) {
+                  toast("error", "internal error");
+                } finally {
+                  h = h.filter(function (obj) {
+                    return obj.uid !== h[counter].uid;
+                  });
+                  if (h.length == 0) {
+                    overlay = false;
+                  }
+                  progress = 0;
+                  toast("success", "deleted");
+                }
+              }}
+              class="text-red-600 fixed bottom-4 right-4 btn btn-xs btn-ghost ml-auto mt-auto bg-white bg-opacity-70 backdrop-blur-sm"
+            >
+              <TrashAlt width="1.5em" />
+            </button>
+          </div>
         {/if}
       </div>
     </div>
