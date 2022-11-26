@@ -253,7 +253,7 @@
         {/if}
       {/if}
     </div>
-    <div class="text-xs m-2 p-2">
+    <div class="text-xs m-3 p-4 pt-0 pb-0">
       {@html DOMPurify.sanitize(user_bio) || "404 bio not found"}
     </div>
     <div class="flex justify-center items-center flex-col">
