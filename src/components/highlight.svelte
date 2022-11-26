@@ -1,10 +1,16 @@
 <script>
-  import { Plus, TrashAlt, X } from "@svicons/boxicons-regular";
+  import {
+    ChevronLeft,
+    ChevronRight,
+    Plus,
+    TrashAlt,
+    X,
+  } from "@svicons/boxicons-regular";
   import { reveal } from "svelte-reveal";
   import { v4 } from "uuid";
-  import { db, user } from "../lib/gun";
+  import { db, keys, user } from "../lib/gun";
   import { toast } from "./toast";
-  export let person, self;
+  export let person, self, forAccount;
   let h = [];
   let overlay;
 
@@ -153,7 +159,7 @@
             src={avatar}
             class="h-14 w-14 object-cover rounded-full 
             {h.length !== 0
-              ? 'ring ring-blue-700 hover:ring-sky-700 transition-all duration-500'
+              ? 'ring-2 ring-offset-2 ring-blue-700 hover:ring-sky-700 transition-all duration-500'
               : ''}"
             alt=""
           />
@@ -176,12 +182,34 @@
     >
       <img
         src={avatar}
-        class="h-14 w-14 object-cover rounded-full ring ring-blue-500"
+        class="h-14 w-14 object-cover rounded-full ring-2 ring-offset-2 ring-blue-500 transition-all duration-500 hover:ring-sky-700"
         alt=""
       />
     </div>
-    <div class="truncate max-w-10 text-xs">
-      {name_user}
+    {#if !forAccount}
+      <div class="truncate max-w-10 text-xs">
+        {name_user}
+      </div>
+    {/if}
+  </div>
+{:else if forAccount == true}
+  <div
+    class="flex w-16 container m-2 flex-col justify-center items-center gap-2"
+  >
+    <!-- svelte-ignore a11y-click-events-have-key-events -->
+    <div
+      on:click={() => {
+        overlay = true;
+      }}
+    >
+      <img
+        src={avatar}
+        class="h-14 w-14 object-cover rounded-full 
+            {h.length !== 0
+          ? 'ring-2 ring-offset-2 ring-blue-700 hover:ring-sky-700 transition-all duration-500'
+          : ''}"
+        alt=""
+      />
     </div>
   </div>
 {/if}
@@ -238,19 +266,21 @@
         >
           {#if counter !== 0}
             <button
-              class="btn btn-circle btn-ghost mr-auto"
+              class="btn p-2 btn-sm rounded-full h-10 w-10 btn-ghost bg-white bg-opacity-70 backdrop-blur-sm mr-auto"
               on:click={() => {
                 if (counter !== 0) {
                   counter -= 1;
                   timer.reset(5000);
                 }
-              }}>❮</button
+              }}
             >
+              <ChevronLeft width="2em" />
+            </button>
           {/if}
 
           {#if counter !== h.length - 1}
             <button
-              class="btn btn-circle btn-ghost ml-auto"
+              class="btn p-2 btn-sm rounded-full h-10 w-10 btn-ghost bg-white bg-opacity-70 backdrop-blur-sm ml-auto"
               on:click={() => {
                 if (counter !== h.length - 1) {
                   counter += 1;
@@ -258,11 +288,11 @@
                 }
               }}
             >
-              ❯
+              <ChevronRight width="2em" />
             </button>
           {/if}
         </div>
-        {#if self}
+        {#if self || person.pub == $keys.pub}
           <div
             class="absolute flex justify-between transform -translate-y-1/2 w-full left-0 right-0 bottom-3"
           >

@@ -3,10 +3,8 @@
   import Post from "../components/post.svelte";
   import { db, keys, user, username as username_ } from "../lib/gun";
   import { location, push } from "svelte-spa-router";
-  import Peer from "peerjs";
-  import { peer } from "../lib/peer";
   import { DotsVerticalRounded } from "@svicons/boxicons-regular";
-  import { SEA } from "gun";
+  import Highlight from "../components/highlight.svelte";
   require("@tensorflow/tfjs");
   const toxicity = require("@tensorflow-models/toxicity");
 
@@ -177,12 +175,15 @@
 <div class="flex justify-center items-center">
   <div class="break-all w-full md:w-1/2 lg:w-1/3">
     <div class="m-2 p-2 flex items-center">
-      <img
-        class="h-16 w-16 aspect-square object-cover rounded-full"
-        src={user_img ||
-          `https://avatars.dicebear.com/api/initials/${username}.svg`}
-        alt=""
-      />
+      <div class="h-16 w-16 aspect-square object-cover rounded-full">
+        <Highlight
+          person={{
+            name: username,
+            pub: pub,
+          }}
+          forAccount={true}
+        />
+      </div>
       <div class="flex w-full flex-col justify-center items-center">
         <div class="flex flex-col">
           <span class="text-md">
