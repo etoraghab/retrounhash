@@ -3,6 +3,7 @@
   "version": "1.1.17",
   "private": true,
   "scripts": {
+    "build-app": "cross-env NODE_ENV=production webpack && electron-builder -l",
     "build": "cross-env NODE_ENV=production webpack",
     "dev": "webpack serve",
     "format": "prettier --plugin-search-dir ./ --write .",
@@ -21,6 +22,8 @@
     "cross-env": "^7.0.3",
     "css-loader": "^6.7.2",
     "css-minimizer-webpack-plugin": "^4.2.2",
+    "electron": "^21.3.1",
+    "electron-builder": "^23.6.0",
     "mini-css-extract-plugin": "^2.7.0",
     "postcss": "^8.4.19",
     "postcss-loader": "^7.0.1",
@@ -48,6 +51,7 @@
     "copy-to-clipboard": "^3.3.3",
     "daisyui": "^2.41.0",
     "dompurify": "^2.4.1",
+    "electron-serve": "^1.1.0",
     "gun": "^0.2020.1238",
     "moment": "^2.29.4",
     "peerjs": "^1.4.7",
@@ -61,5 +65,21 @@
     "node": ">=16.x"
   },
   "author": "atordvairn <atordvairn@gmail.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "build": {
+    "icon": "public/favicon.png",
+    "productName": "retrounhash",
+    "files": [
+      "public/**/*",
+      "main.js",
+      "preload.js"
+    ],
+    "win": {},
+    "linux": {
+      "category": "communication"
+    },
+    "mac": {}
+  },
+  "description": "decentralized communication",
+  "main": "main.js"
 }

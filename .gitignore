@@ -3,3 +3,4 @@ pnpm-lock.yaml
 public/build/*
 yarn.lock
 /public/*.woff
+dist/*
