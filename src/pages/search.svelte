@@ -12,29 +12,33 @@
       .get("#" + String(query).toLowerCase())
       .map()
       .once((post) => {
+        console.log(post);
         db.get(post).once(async (a) => {
           if (Object.hasOwn(a || {}, "pub") && Object.hasOwn(a || {}, "sign")) {
             let signed = await SEA.verify(a.sign, a.pub);
             if (signed === a.content) {
               let user_graph = db.user(a.pub);
+              let name_;
               user_graph.get("alias").once((name) => {
-                user_graph.get("displayImage").once(async (useAvatar) => {
-                  if (typeof a !== undefined) {
-                    posts = [
-                      {
-                        avatar:
-                          useAvatar ||
-                          `https://avatars.dicebear.com/api/initials/${name}.svg`,
-                        content: a.content,
-                        date: Gun.state.is(a, "content"),
-                        username: name,
-                        img: a.img,
-                        pub: a.pub,
-                      },
-                      ...posts,
-                    ];
-                  }
-                });
+                name_ = name;
+              });
+
+              user_graph.get("displayImage").once(async (useAvatar) => {
+                if (typeof a !== undefined) {
+                  posts = [
+                    {
+                      avatar:
+                        useAvatar ||
+                        `https://avatars.dicebear.com/api/initials/${name_}.svg`,
+                      content: a.content,
+                      date: Gun.state.is(a, "content"),
+                      username: name_,
+                      img: a.img,
+                      pub: a.pub,
+                    },
+                    ...posts,
+                  ];
+                }
               });
             }
           }
