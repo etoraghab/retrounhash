@@ -30,7 +30,7 @@
 <div class="flex justify-center items-center">
   <div class="w-1/3 flex flex-col gap-2 justify-center items-center h-screen">
     <div
-      class="text-center text-4xl font-mono"
+      class="text-center text-4xl"
       use:reveal={{ transition: "fade", delay: 50 }}
     >
       retrounhash

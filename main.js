@@ -69,23 +69,23 @@ app.on('activate', function () {
 // code. You can also put them in separate files and require them here.
  */
 
-const { app, BrowserWindow, screen } = require("electron")
+const { app, BrowserWindow, screen } = require("electron");
 
 const createWindow = () => {
-    const { width, height } = screen.getPrimaryDisplay().workAreaSize;
+  const { width, height } = screen.getPrimaryDisplay().workAreaSize;
 
-    window = new BrowserWindow({
-        width: width / 1.25,
-        height: height / 1.25,
-        webPreferences: {
-            nodeIntegration: true
-        }
-    });
+  window = new BrowserWindow({
+    width: width / 1.25,
+    height: height / 1.25,
+    webPreferences: {
+      nodeIntegration: true,
+    },
+  });
 
-    window.loadFile('public/index.html');
+  window.loadFile("public/index.html");
 };
 
 let window = null;
 
-app.whenReady().then(createWindow)
-app.on('window-all-closed', () => app.quit());
+app.whenReady().then(createWindow);
+app.on("window-all-closed", () => app.quit());

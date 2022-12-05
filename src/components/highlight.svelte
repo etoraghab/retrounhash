@@ -338,7 +338,7 @@
     z-index: 52;
   }
 
-  .truncate{
+  .truncate {
     cursor: pointer;
   }
 </style>

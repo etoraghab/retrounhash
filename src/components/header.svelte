@@ -340,7 +340,7 @@
             </button>
           </div>
           <button
-            class="font-mono text-xl m-auto ml-3 mr-0 mb-auto cursor-pointer"
+            class="text-xl m-auto ml-3 mr-0 mb-auto cursor-pointer"
             on:click={() => {
               push("/");
             }}
