@@ -97,24 +97,25 @@
     if (overlay) {
       if (counter + 1 !== h.length) {
         counter += 1;
+        progress = 0;
       }
     }
-  }, 5000);
+  }, 10000);
   timer.start();
 
   let progress = 0;
 
   let timer_prog = new Timer(() => {
     if (overlay) {
-      progress += 70;
+      progress += 100;
     }
-  }, 70);
+  }, 100);
 
   function stopTimer() {
     if (overlay) {
       timer_prog.reset(100);
       timer_prog.start();
-      timer.reset(5000);
+      timer.reset(10000);
       timer.start();
     } else {
       timer_prog.stop();
@@ -135,7 +136,7 @@
         overlay = true;
       }
     }}
-    class="flex w-16 container m-2 flex-col justify-center items-center gap-2"
+    class="flex w-16 truncate container m-2 flex-col justify-center items-center gap-2"
   >
     <div>
       <div class="indicator">
@@ -159,7 +160,7 @@
             src={avatar}
             class="h-14 w-14 object-cover rounded-full 
             {h.length !== 0
-              ? 'ring-2 ring-offset-2 ring-blue-700 hover:ring-sky-700 transition-all duration-500'
+              ? 'border-2 border-offset-2 border-blue-700 hover:border-sky-700 transition-all duration-500'
               : ''}"
             alt=""
           />
@@ -172,7 +173,7 @@
   </div>
 {:else if h.length !== 0}
   <div
-    class="flex w-16 container m-2 flex-col justify-center items-center gap-2"
+    class="flex w-16 truncate container m-2 flex-col justify-center items-center gap-2"
   >
     <!-- svelte-ignore a11y-click-events-have-key-events -->
     <div
@@ -182,19 +183,19 @@
     >
       <img
         src={avatar}
-        class="h-14 w-14 object-cover rounded-full ring-2 ring-offset-2 ring-blue-500 transition-all duration-500 hover:ring-sky-700"
+        class="h-14 w-14 object-cover rounded-full border-2 border-offset-2 border-blue-500 transition-all duration-500 hover:border-sky-700"
         alt=""
       />
     </div>
     {#if !forAccount}
-      <div class="truncate max-w-10 text-xs">
+      <div class="max-w-10 text-xs">
         {name_user}
       </div>
     {/if}
   </div>
 {:else if forAccount == true}
   <div
-    class="flex w-16 container m-2 flex-col justify-center items-center gap-2"
+    class="flex w-16 truncate container m-2 flex-col justify-center items-center gap-2"
   >
     <!-- svelte-ignore a11y-click-events-have-key-events -->
     <div
@@ -206,7 +207,7 @@
         src={avatar}
         class="h-14 w-14 object-cover rounded-full 
             {h.length !== 0
-          ? 'ring-2 ring-offset-2 ring-blue-700 hover:ring-sky-700 transition-all duration-500'
+          ? 'border-2 border-offset-2 border-blue-700 hover:border-sky-700 transition-all duration-500'
           : ''}"
         alt=""
       />
@@ -241,7 +242,7 @@
           <progress
             class="progress progress-accent w-full caret-blue-600 h-2"
             value={progress}
-            max="5000"
+            max="10000"
           />
           <div class="ml-auto mr-3">
             <button
@@ -270,7 +271,7 @@
               on:click={() => {
                 if (counter !== 0) {
                   counter -= 1;
-                  timer.reset(5000);
+                  timer.reset(10000);
                 }
               }}
             >
@@ -284,7 +285,7 @@
               on:click={() => {
                 if (counter !== h.length - 1) {
                   counter += 1;
-                  timer.reset(5000);
+                  timer.reset(10000);
                 }
               }}
             >
@@ -303,6 +304,7 @@
                 } catch (error) {
                   toast("error", "internal error");
                 } finally {
+                  counter = 0;
                   h = h.filter(function (obj) {
                     return obj.uid !== h[counter].uid;
                   });
@@ -334,5 +336,9 @@
     right: 0;
     bottom: 0;
     z-index: 52;
+  }
+
+  .truncate{
+    cursor: pointer;
   }
 </style>
