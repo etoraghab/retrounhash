@@ -190,21 +190,17 @@
       </div>
       {#if isFollowingUser && $location !== `/u/${$keys.pub}`}
         <div class="dropdown dropdown-left">
-          <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
-          <!-- svelte-ignore a11y-label-has-associated-control -->
-          <label tabindex="0" class="btn btn-xs btn-ghost m-1">
+          <div tabindex="-1" class="btn btn-xs btn-ghost m-1">
             <DotsVerticalRounded width="1.5em" />
-          </label>
-          <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
-          <ul
-            tabindex="0"
+          </div>
+          <div
+            tabindex="-1"
             class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52"
           >
-            <!-- svelte-ignore a11y-missing-attribute -->
             <li>
               <button on:click={call}> call </button>
             </li>
-          </ul>
+          </div>
         </div>
       {/if}
     </div>
@@ -247,7 +243,7 @@
         {/if}
       {/if}
     </div>
-    <div class="text-xs m-3 p-4 pt-0 pb-0 flex gap-1 flex-wrap">
+    <div class="text-xs m-3 p-4 pt-0 pb-0 flex gap-0.5 flex-wrap">
       {@html parse(user_bio)}
     </div>
     <div class="flex justify-center items-center flex-col">

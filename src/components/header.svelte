@@ -400,13 +400,12 @@
         {/if}
 
         {#if $location == `/u/${$keys.pub}`}
-          <div
-            on:keypress={editProfile}
+          <button
             on:click={editProfile}
             class="m-auto mr-1 p-1 rounded-full bg-base-100 bg-opacity-10"
           >
             <Edit width="1.2em" />
-          </div>
+          </button>
         {:else if $location.includes("/u/")}
           <Clipboard
             text={window.location.href}
@@ -423,13 +422,12 @@
             </button>
           </Clipboard>
         {:else if $location !== "/explore" && !$location.includes("/search")}
-          <div
-            on:keypress={writePost}
+          <button
             on:click={writePost}
             class="m-auto mr-1 p-1 rounded-full bg-base-100 bg-opacity-10"
           >
             <Pencil width="1.2em" />
-          </div>
+          </button>
         {/if}
       </div>
       {#if writeMode}
@@ -455,7 +453,6 @@
                           src={postThumb}
                           alt=""
                         />
-                        <!-- svelte-ignore a11y-media-has-caption -->
                       {:else}
                         <video
                           class="rounded-md object-cover h-14 w-14"
@@ -463,7 +460,9 @@
                           src={postImage}
                           autoplay
                           muted
-                        />
+                        >
+                          <track kind="captions" />
+                        </video>
                       {/if}
                     </label>
                   </button>
@@ -582,21 +581,20 @@
           ? 'rounded-md'
           : 'rounded-full'}"
       >
-        <!-- svelte-ignore a11y-media-has-caption -->
         {#if callAnswered}
           <div class="flex flex-col justify-center items-center mb-2">
-            <video
-              class="max-h-96 rounded-md"
-              bind:this={othervideo}
-              autoplay
-            />
+            <video class="max-h-96 rounded-md" bind:this={othervideo} autoplay>
+              <track kind="captions" />
+            </video>
             <video
               style="right: 10px;bottom: 3.7rem;"
               class="h-14 fixed object-cover rounded-md"
               bind:this={selfvideo}
               autoplay
               muted
-            />
+            >
+              <track kind="captions" />
+            </video>
           </div>
         {/if}
         <div

@@ -129,8 +129,7 @@
 </script>
 
 {#if self == true}
-  <!-- svelte-ignore a11y-click-events-have-key-events -->
-  <div
+  <button
     on:click={() => {
       if (h.length !== 0) {
         overlay = true;
@@ -170,13 +169,12 @@
     <div class="truncate max-w-10 text-xs">
       {name_user}
     </div>
-  </div>
+  </button>
 {:else if h.length !== 0}
   <div
     class="flex w-16 container m-2 flex-col justify-center items-center gap-2"
   >
-    <!-- svelte-ignore a11y-click-events-have-key-events -->
-    <div
+    <button
       on:click={() => {
         overlay = true;
       }}
@@ -186,7 +184,7 @@
         class="h-14 w-14 object-cover rounded-full border-2 border-offset-2 border-blue-500 transition-all duration-500 hover:border-sky-700"
         alt=""
       />
-    </div>
+    </button>
     {#if !forAccount}
       <div class="max-w-10 text-xs">
         {name_user}
@@ -197,8 +195,7 @@
   <div
     class="flex w-16 container m-2 flex-col justify-center items-center gap-2"
   >
-    <!-- svelte-ignore a11y-click-events-have-key-events -->
-    <div
+    <button
       on:click={() => {
         overlay = true;
       }}
@@ -211,12 +208,11 @@
           : ''}"
         alt=""
       />
-    </div>
+    </button>
   </div>
 {/if}
 
 {#if overlay}
-  <!-- svelte-ignore a11y-click-events-have-key-events -->
   <div
     use:reveal={{
       transition: "slide",
@@ -225,7 +221,6 @@
     class="bg-base-100 z-20 flex justify-center items-center bg-opacity-50 backdrop-blur-md"
     id="overlay"
   >
-    <!-- svelte-ignore a11y-click-events-have-key-events -->
     <div class="carousel h-full m-2 w-full md:w-1/2 lg:w-1/3">
       <div class="carousel-item relative w-full pt-2 pb-2">
         <div class="indicator h-full mb-3 w-full">
@@ -235,7 +230,6 @@
             class="w-full rounded-md object-cover"
           />
         </div>
-        <!-- progress -->
         <div
           class="absolute flex flex-col justify-between transform -translate-y-1/2 w-full left-0 right-0 top-8"
         >

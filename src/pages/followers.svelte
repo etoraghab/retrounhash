@@ -3,7 +3,7 @@
   import { push } from "svelte-spa-router";
   import Loading from "../components/loading.svelte";
   import { db, user } from "../lib/gun";
-  import { getUserData } from "../lib/utils";
+  import { getUserData, parse } from "../lib/utils";
 
   let followers = [];
   export let params;
@@ -63,23 +63,24 @@
           }}
           class="bg-base-100 border border-blue-600 border-opacity-10 bg-opacity-6 p-2 w-full md:w-1/2 lg:w-1/3 rounded-xl flex gap-2"
         >
-          <img
+          <button
+            class="rounded-full w-10 h-10 aspect-square object-cover cursor-pointer"
             on:click={() => {
               push(`/u/${f.pub}`);
             }}
-            on:keydown={() => {
-              push(`/u/${f.pub}`);
-            }}
-            src={f.avatar}
-            class="rounded-full w-10 h-10 aspect-square object-cover cursor-pointer"
-            alt=""
-          />
+          >
+            <img
+              src={f.avatar}
+              class="rounded-full w-10 h-10 aspect-square object-cover cursor-pointer"
+              alt=""
+            />
+          </button>
           <div class="text-xs break-all w-full flex flex-col">
             <div class="flex w-full">
               <div class="text-md truncate">@{f.username}</div>
             </div>
-            <div class="text-xs line-clamp-2">
-              {f.bio}
+            <div class="text-xs flex gap-0.5 max-h-11 overflow-scroll flex-wrap">
+              {@html parse(f.bio)}
             </div>
           </div>
         </div>
