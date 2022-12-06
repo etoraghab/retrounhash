@@ -24,7 +24,7 @@
 </script>
 
 <div class="p-3">
-  <div class="flex justify-center items-center flex-col gap-3">
+  <div class="flex justify-center flex-col gap-3">
     <div class="flex overflow-x-scroll">
       <Highlight
         person={{

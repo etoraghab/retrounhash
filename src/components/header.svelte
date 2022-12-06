@@ -136,6 +136,8 @@
     await displayNameGraph.put(user_display_input);
     await userBioInputGraph.put(user_bio_input);
     await userProfileImageGraph.put(imgProfile);
+    var event = new CustomEvent("userdataupdated");
+    document.dispatchEvent(event);
     editProfile();
   }
 

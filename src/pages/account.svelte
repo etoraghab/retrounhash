@@ -16,12 +16,17 @@
   let username;
 
   let user_img, user_bio, user_displayName;
-  getUserData(pub).then((data) => {
-    username = data.name;
-    user_img = data.img;
-    user_bio = data.bio;
-    user_displayName = data.displayName;
-  });
+  async function refresuserdata() {
+    await getUserData(pub).then((data) => {
+      username = data.name;
+      user_img = data.img;
+      user_bio = data.bio;
+      user_displayName = data.displayName;
+    });
+  }
+  refresuserdata();
+
+  document.addEventListener("userdataupdated", refresuserdata);
 
   let posts = [];
   let toxicity_state;
@@ -242,7 +247,7 @@
         {/if}
       {/if}
     </div>
-    <div class="text-xs m-3 p-4 pt-0 pb-0">
+    <div class="text-xs m-3 p-4 pt-0 pb-0 flex gap-1 flex-wrap">
       {@html parse(user_bio)}
     </div>
     <div class="flex justify-center items-center flex-col">
