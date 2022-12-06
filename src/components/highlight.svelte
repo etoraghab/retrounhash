@@ -2,6 +2,7 @@
   import {
     ChevronLeft,
     ChevronRight,
+    Download,
     Plus,
     TrashAlt,
     X,
@@ -11,12 +12,14 @@
   import { db, keys, user } from "../lib/gun";
   import { toast } from "./toast";
   export let person, self, forAccount;
+  let username_;
   let h = [];
   let overlay;
 
   let highlight_user_graph = db.user(person.pub);
   let name_user, avatar;
   highlight_user_graph.get("alias").once((name) => {
+    username_ = name;
     highlight_user_graph.get("displayImage").once(async (useAvatar) => {
       avatar =
         useAvatar || `https://avatars.dicebear.com/api/initials/${name}.svg`;
@@ -136,7 +139,7 @@
         overlay = true;
       }
     }}
-    class="flex w-16 truncate container m-2 flex-col justify-center items-center gap-2"
+    class="flex w-16 z container m-2 flex-col justify-center items-center gap-2"
   >
     <div>
       <div class="indicator">
@@ -173,7 +176,7 @@
   </div>
 {:else if h.length !== 0}
   <div
-    class="flex w-16 truncate container m-2 flex-col justify-center items-center gap-2"
+    class="flex w-16 container m-2 flex-col justify-center items-center gap-2"
   >
     <!-- svelte-ignore a11y-click-events-have-key-events -->
     <div
@@ -195,7 +198,7 @@
   </div>
 {:else if forAccount == true}
   <div
-    class="flex w-16 truncate container m-2 flex-col justify-center items-center gap-2"
+    class="flex w-16 container m-2 flex-col justify-center items-center gap-2"
   >
     <!-- svelte-ignore a11y-click-events-have-key-events -->
     <div
@@ -256,10 +259,10 @@
           </div>
         </div>
         <div
-          class="absolute flex justify-between transform -translate-y-1/2 w-full bottom-1/4 bg-black bg-opacity-60 backdrop-blur-sm text-white text-opacity-80 text-center"
+          class="absolute w-full bg-black bg-opacity-60 backdrop-blur-sm text-white text-opacity-80 text-center bottom-20"
         >
           <div class="text-center w-full">
-            {h[counter].caption}
+            <span class="break-all">{h[counter].caption}</span>
           </div>
         </div>
         <div
@@ -297,28 +300,38 @@
           <div
             class="absolute flex justify-between transform -translate-y-1/2 w-full left-0 right-0 bottom-3"
           >
-            <button
-              on:click={async () => {
-                try {
-                  await user.get("highlights").get(h[counter].uid).put(null);
-                } catch (error) {
-                  toast("error", "internal error");
-                } finally {
-                  counter = 0;
-                  h = h.filter(function (obj) {
-                    return obj.uid !== h[counter].uid;
-                  });
-                  if (h.length == 0) {
-                    overlay = false;
+            <div class="fixed flex gap-2 bottom-4 right-4 ml-auto mt-auto">
+              <button
+                on:click={async () => {
+                  try {
+                    await user.get("highlights").get(h[counter].uid).put(null);
+                  } catch (error) {
+                    toast("error", "internal error");
+                  } finally {
+                    counter = 0;
+                    h = h.filter(function (obj) {
+                      return obj.uid !== h[counter].uid;
+                    });
+                    if (h.length == 0) {
+                      overlay = false;
+                    }
+                    progress = 0;
+                    toast("success", "deleted");
                   }
-                  progress = 0;
-                  toast("success", "deleted");
-                }
-              }}
-              class="text-red-600 fixed bottom-4 right-4 btn btn-xs btn-ghost ml-auto mt-auto bg-white bg-opacity-70 backdrop-blur-sm"
-            >
-              <TrashAlt width="1.5em" />
-            </button>
+                }}
+                class="text-red-600 btn btn-xs btn-ghost bg-white bg-opacity-70 backdrop-blur-sm"
+              >
+                <TrashAlt width="1.5em" />
+              </button>
+              <a
+                role="button"
+                href={h[counter].img}
+                download="{username_}_highlight{counter}"
+                class="btn btn-xs btn-ghost text-blue-600 bg-white bg-opacity-70 backdrop-blur-sm"
+              >
+                <Download width="1.5em" />
+              </a>
+            </div>
           </div>
         {/if}
       </div>

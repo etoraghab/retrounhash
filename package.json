@@ -48,6 +48,8 @@
     "@tensorflow-models/toxicity": "^1.2.2",
     "@tensorflow/tfjs": "^4.0.0",
     "animate.css": "^4.1.1",
+    "browser-image-compression": "^2.0.0",
+    "compress-base64": "^1.0.2",
     "copy-to-clipboard": "^3.3.3",
     "daisyui": "^2.41.0",
     "dompurify": "^2.4.1",

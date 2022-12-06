@@ -12,7 +12,6 @@
       .get("#" + String(query).toLowerCase())
       .map()
       .once((post) => {
-        console.log(post);
         db.get(post).once(async (a) => {
           if (Object.hasOwn(a || {}, "pub") && Object.hasOwn(a || {}, "sign")) {
             let signed = await SEA.verify(a.sign, a.pub);
@@ -34,6 +33,7 @@
                       date: Gun.state.is(a, "content"),
                       username: name_,
                       img: a.img,
+                      thumb: a.thumb,
                       pub: a.pub,
                     },
                     ...posts,

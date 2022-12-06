@@ -4,7 +4,7 @@
   import { push, link, location } from "svelte-spa-router";
   import { db, keys, user } from "../lib/gun";
   import Clipboard from "svelte-clipboard";
-
+  import imageCompression from "browser-image-compression";
   import Home from "@svicons/boxicons-regular/home.svelte";
   import {
     Compass,
@@ -59,6 +59,7 @@
         date: String(moment().toString()),
         content: postContent,
         img: postImage || "",
+        thumb: postThumb || 'none',
         sign: await SEA.sign(postContent, $keys),
         pub: $keys.pub,
       })
@@ -179,16 +180,39 @@
     }
   });
 
-  let postImage;
+  let postImage, postThumb;
 
   var filePostUploadedType;
-  function imageUploaded() {
+
+  function blobToBase64(blob) {
+    return new Promise((resolve, _) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result);
+      reader.readAsDataURL(blob);
+    });
+  }
+
+  async function imageUploaded() {
     var file = document.querySelector("#avatar-chooser").files[0];
 
     if (String(file.type).includes("video")) {
       filePostUploadedType = "video";
     } else {
       filePostUploadedType = "photo";
+
+      const imageFile = event.target.files[0];
+      const options = {
+        maxSizeMB: 0.1,
+        maxWidthOrHeight: 500,
+        useWebWorker: true,
+      };
+      try {
+        const compressedFile = await imageCompression(imageFile, options);
+
+        postThumb = await blobToBase64(compressedFile); // write your own logic
+      } catch (error) {
+        console.log(error);
+      }
     }
 
     var reader = new FileReader();
@@ -402,7 +426,7 @@
                       {#if filePostUploadedType == "photo"}
                         <img
                           class="rounded-md object-cover h-14 w-14"
-                          src={postImage}
+                          src={postThumb}
                           alt=""
                         />
                         <!-- svelte-ignore a11y-media-has-caption -->

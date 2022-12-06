@@ -78,7 +78,7 @@
         >
           {#if data.img.split("data:")[1].split("/")[0] == "image"}
             <img
-              src={data.img}
+              src={data.thumb}
               class="w-full h-32 aspect-square rounded-md object-cover"
               alt=""
             />
@@ -107,6 +107,7 @@
     {#if data.self}
       <div class="m-auto mr-1 text-red-600">
         <button
+        class="btn btn-ghost btn-xs"
           on:click={async () => {
             await user
               .get("posts")
