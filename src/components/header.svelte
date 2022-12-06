@@ -209,8 +209,7 @@
       };
       try {
         const compressedFile = await imageCompression(imageFile, options);
-
-        postThumb = await blobToBase64(compressedFile); // write your own logic
+        postThumb = await blobToBase64(compressedFile);
       } catch (error) {
         console.log(error);
       }
@@ -228,7 +227,17 @@
 
     var reader = new FileReader();
     reader.onload = async function () {
-      imgProfile = reader.result;
+      const options = {
+        maxSizeMB: 1,
+        maxWidthOrHeight: 300,
+        useWebWorker: true,
+      };
+      try {
+        const compressedFile = await imageCompression(file, options);
+        imgProfile = await blobToBase64(compressedFile);
+      } catch (error) {
+        console.log(error);
+      }
     };
     reader.readAsDataURL(file);
   }
