@@ -1,35 +1,26 @@
 <script>
-  import DOMPurify, { sanitize } from "dompurify";
   import Post from "../components/post.svelte";
   import { db, keys, user, username as username_ } from "../lib/gun";
   import { location, push } from "svelte-spa-router";
   import { DotsVerticalRounded } from "@svicons/boxicons-regular";
   import Highlight from "../components/highlight.svelte";
+  import { getUserData } from "../lib/utils";
   require("@tensorflow/tfjs");
   const toxicity = require("@tensorflow-models/toxicity");
+  import { parse } from "../lib/utils";
 
   export let params;
   const pub = params.pub;
 
   const user_graph = db.user(pub);
   let username;
-  user_graph.get("alias").once((name) => {
-    username = name;
-  });
 
-  let user_img;
-  user_graph.get("displayImage").on((img) => {
-    user_img = img;
-  });
-
-  let user_bio;
-  user_graph.get("bio").on((bio) => {
-    user_bio = bio.replace(/\n/g, "<br>") || "404 no bio";
-  });
-
-  let user_displayName;
-  user_graph.get("displayName").on((displayName) => {
-    user_displayName = displayName || username;
+  let user_img, user_bio, user_displayName;
+  getUserData(pub).then((data) => {
+    username = data.name;
+    user_img = data.img;
+    user_bio = data.bio;
+    user_displayName = data.displayName;
   });
 
   let posts = [];
@@ -40,73 +31,69 @@
     .once((val) => {
       toxicity_state = val;
     });
-  user_graph.get("displayImage").once(async (useAvatar) => {
-    user_graph.get("alias").once(async (name) => {
-      user_graph
-        .get("posts")
-        .map()
-        .once(async (post, key) => {
-          if (toxicity_state) {
-            toxicity.load(0.9).then((model) => {
-              const sentences = [post.content];
-              model.classify(sentences).then((predictions) => {
-                if (predictions[6].results[0].match !== true) {
-                  if (typeof post !== undefined && post) {
-                    let self;
-                    if ($username_ === name) {
-                      self = true;
-                    } else {
-                      self = false;
-                    }
-                    posts = [
-                      {
-                        avatar:
-                          useAvatar ||
-                          `https://avatars.dicebear.com/api/initials/${name}.svg`,
-                        content: post.content,
-                        date: new Date(post.date).toDateString(),
-                        username: name,
-                        pub: pub,
-                        img: post.img,
-                        thumb: post.thumb,
-                        uid: key,
-                        self: self,
-                      },
-                      ...posts,
-                    ];
-                  }
+  user_graph
+    .get("posts")
+    .map()
+    .once(async (post, key) => {
+      if (toxicity_state) {
+        toxicity.load(0.9).then((model) => {
+          const sentences = [post.content];
+          model.classify(sentences).then((predictions) => {
+            if (predictions[6].results[0].match !== true) {
+              if (typeof post !== undefined && post) {
+                let self;
+                if ($username_ === name) {
+                  self = true;
+                } else {
+                  self = false;
                 }
-              });
-            });
-          } else {
-            if (typeof post !== undefined && post) {
-              let self;
-              if ($username_ === name) {
-                self = true;
-              } else {
-                self = false;
+                posts = [
+                  {
+                    avatar:
+                      user_img ||
+                      `https://avatars.dicebear.com/api/initials/${username}.svg`,
+                    content: post.content,
+                    date: new Date(post.date).toDateString(),
+                    username: username,
+                    pub: pub,
+                    img: post.img,
+                    thumb: post.thumb,
+                    uid: key,
+                    self: self,
+                  },
+                  ...posts,
+                ];
               }
-              posts = [
-                {
-                  avatar:
-                    useAvatar ||
-                    `https://avatars.dicebear.com/api/initials/${name}.svg`,
-                  content: post.content,
-                  date: Gun.state.is(post, "content"),
-                  username: name,
-                  img: post.img,
-                  thumb: post.thumb,
-                  pub: pub,
-                  uid: key,
-                  self: self,
-                },
-                ...posts,
-              ];
             }
-          }
+          });
         });
+      } else {
+        if (typeof post !== undefined && post) {
+          let self;
+          if ($username_ === name) {
+            self = true;
+          } else {
+            self = false;
+          }
+          posts = [
+            {
+              avatar:
+                user_img ||
+                `https://avatars.dicebear.com/api/initials/${username}.svg`,
+              content: post.content,
+              date: Gun.state.is(post, "content"),
+              username: username,
+              img: post.img,
+              thumb: post.thumb,
+              pub: pub,
+              uid: key,
+              self: self,
+            },
+            ...posts,
+          ];
+        }
+      }
     });
-  });
 
   let isFollowed;
   let following_graph = user_graph.get("following").get(pub);
@@ -256,7 +243,7 @@
       {/if}
     </div>
     <div class="text-xs m-3 p-4 pt-0 pb-0">
-      {@html DOMPurify.sanitize(user_bio) || "404 bio not found"}
+      {@html parse(user_bio)}
     </div>
     <div class="flex justify-center items-center flex-col">
       <div class="divider m-auto w-full md:w-1/2 lg:w-1/3" />

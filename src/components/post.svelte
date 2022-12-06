@@ -1,42 +1,15 @@
 <script>
-  import { link, push } from "svelte-spa-router";
-  import DOMPurify from "dompurify";
+  import { push } from "svelte-spa-router";
   import { reveal } from "svelte-reveal";
   import moment from "moment";
   export let data;
   export let bold;
-  import { parse as parseEm } from "twemoji-parser";
-  import { Play, PlayCircle, TrashAlt, X } from "@svicons/boxicons-regular";
+  import { Play, TrashAlt, X } from "@svicons/boxicons-regular";
   import { user } from "../lib/gun";
-
-  function parseEmoji(str) {
-    const entities = parseEm(str);
-    let text = str;
-    entities.forEach((e) => {
-      text = text.replace(
-        new RegExp(e.text, "g"),
-        `<img src="${e.url}" draggable="false" class="h-3 mt-auto mb-auto selector" alt="" />`
-      );
-    });
-
-    return text;
-  }
+  import { parse } from "../lib/utils";
 
   if (!bold) {
     bold = "the meaning of life is 69";
-  }
-
-  function parse(t) {
-    return DOMPurify.sanitize(
-      parseEmoji(
-        t
-          .replace(
-            /#+([a-zA-Z0-9_]+)/gi,
-            '<a class="text-blue-500" href="#/search/#$1">#$1</a>'
-          )
-          .replace(/\n/g, "<br>")
-      )
-    );
   }
 
   let overlay;
@@ -107,7 +80,7 @@
     {#if data.self}
       <div class="m-auto mr-1 text-red-600">
         <button
-        class="btn btn-ghost btn-xs"
+          class="btn btn-ghost btn-xs"
           on:click={async () => {
             await user
               .get("posts")

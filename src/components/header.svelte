@@ -25,6 +25,7 @@
   import Settings from "./settings.svelte";
   import { toast } from "./toast";
   import { peer } from "../lib/peer";
+  import { getUserData } from "../lib/utils";
 
   if (!user.is) {
     push("/");
@@ -59,7 +60,7 @@
         date: String(moment().toString()),
         content: postContent,
         img: postImage || "",
-        thumb: postThumb || 'none',
+        thumb: postThumb || "none",
         sign: await SEA.sign(postContent, $keys),
         pub: $keys.pub,
       })
@@ -252,15 +253,21 @@
       let publicKey = await SEA.decrypt(callerData.sign, secret);
       if (publicKey == callerData.pub) {
         calling = true;
-        let graph = db.user(publicKey);
-        graph.get("alias").once((name) => {
-          callingUserData["name"] = name;
+
+        await getUserData(publicKey).then((data) => {
+          callingUserData.name = data.name;
+          callingUserData.img = data.img;
         });
-        graph.get("displayImage").once((img) => {
-          callingUserData["img"] =
-            img ||
-            `https://avatars.dicebear.com/api/initials/${callingUserData.name}.svg`;
-        });
+
+        // let graph = db.user(publicKey);
+        // graph.get("alias").once((name) => {
+        //   callingUserData["name"] = name;
+        // });
+        // graph.get("displayImage").once((img) => {
+        //   callingUserData["img"] =
+        //     img ||
+        //     `https://avatars.dicebear.com/api/initials/${callingUserData.name}.svg`;
+        // });
         call__ = e;
         e.on("stream", (s) => {
           setTimeout(() => {
@@ -318,6 +325,14 @@
           });
       });
   });
+
+  (async () => {
+    await getUserData(
+      "gA4iCYaUkFi8145RcIWIDx2MbM9pDykj8RVblT0mPfI.ZUMHdDf_aCT3KYgnzOkTLFJAiAuGla776b0ZSexG1EM"
+    ).then((val) => {
+      console.log("kokok", val);
+    });
+  })();
 </script>
 
 <div class="flex justify-center items-center w-full header__">

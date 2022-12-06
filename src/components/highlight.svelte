@@ -10,36 +10,33 @@
   import { reveal } from "svelte-reveal";
   import { v4 } from "uuid";
   import { db, keys, user } from "../lib/gun";
+  import { getUserData } from "../lib/utils";
   import { toast } from "./toast";
   export let person, self, forAccount;
   let username_;
   let h = [];
   let overlay;
 
-  let highlight_user_graph = db.user(person.pub);
   let name_user, avatar;
-  highlight_user_graph.get("alias").once((name) => {
-    username_ = name;
-    highlight_user_graph.get("displayImage").once(async (useAvatar) => {
-      avatar =
-        useAvatar || `https://avatars.dicebear.com/api/initials/${name}.svg`;
-      name_user = name;
-      highlight_user_graph
-        .get("highlights")
-        .map()
-        .once((a, b) => {
-          if (a) {
-            h = [
-              {
-                caption: a.caption,
-                img: a.img,
-                uid: b,
-              },
-              ...h,
-            ];
-          }
-        });
-    });
+  getUserData(person.pub).then((data) => {
+    name_user = data.name;
+    avatar = data.img;
+    let highlight_user_graph = db.user(person.pub);
+    highlight_user_graph
+      .get("highlights")
+      .map()
+      .once((a, b) => {
+        if (a && b) {
+          h = [
+            {
+              caption: a.caption,
+              img: a.img,
+              uid: b,
+            },
+            ...h,
+          ];
+        }
+      });
   });
 
   let counter = 0;

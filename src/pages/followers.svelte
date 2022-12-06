@@ -3,6 +3,7 @@
   import { push } from "svelte-spa-router";
   import Loading from "../components/loading.svelte";
   import { db, user } from "../lib/gun";
+  import { getUserData } from "../lib/utils";
 
   let followers = [];
   export let params;
@@ -15,38 +16,24 @@
     .map()
     .once(async (val, pub_f) => {
       if (val == true && pub_f !== pub) {
-        let user_posts = 0;
-        let user_name;
-        let user_image;
+        let user_image, user_bio, user_name;
 
-        let user_graph = db.user(pub_f);
-        await user_graph.get("alias").once((name) => {
-          user_name = name;
+        await getUserData(pub_f).then((data) => {
+          user_image = data.img;
+          user_name = data.name;
+          user_bio = data.bio;
+
+          followers = [
+            {
+              name: user_name,
+              pub: pub_f,
+              username: user_name,
+              avatar: user_image,
+              bio: user_bio,
+            },
+            ...followers,
+          ];
         });
-
-        // await user_graph
-        //   .get("posts")
-        //   .map()
-        //   .once(() => {
-        //     user_posts += 1;
-        //   });
-
-        await user_graph.get("displayImage").once((pic) => {
-          user_image = pic;
-        });
-
-        followers = [
-          {
-            name: user_name,
-            pub: pub_f,
-            username: user_name,
-            posts: user_posts,
-            avatar:
-              user_image ||
-              `https://avatars.dicebear.com/api/initials/${user_name}.svg`,
-          },
-          ...followers,
-        ];
       }
     })
     .then(() => {
@@ -91,18 +78,9 @@
             <div class="flex w-full">
               <div class="text-md truncate">@{f.username}</div>
             </div>
-            <!-- <span class="flex gap-1 flex-wrap">
-              <div
-                class="badge badge-sm badge-ghost flex gap-1 justify-center items-center"
-              >
-                {f.posts}
-                {#if f.posts > 1}
-                  posts
-                {:else}
-                  post
-                {/if}
-              </div>
-            </span> -->
+            <div class="text-xs line-clamp-2">
+              {f.bio}
+            </div>
           </div>
         </div>
       {/each}
