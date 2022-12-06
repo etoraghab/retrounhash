@@ -1,5 +1,5 @@
 self.addEventListener("install", function (event) {
-  var CACHE_NAME = "1.1.22";
+  var CACHE_NAME = "1.1.23";
   var urlsToCache = ["/"];
 
   self.addEventListener("install", function (event) {
@@ -14,7 +14,6 @@ self.addEventListener("install", function (event) {
 self.addEventListener("fetch", function (event) {
   event.respondWith(
     caches.match(event.request).then(function (response) {
-      // Cache hit - return response
       if (response) {
         return response;
       }

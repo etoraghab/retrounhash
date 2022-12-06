@@ -5,7 +5,5 @@ export function toast(icon, text = "") {
       icon: icon,
     },
   });
-
-  // Dispatch/Trigger/Fire the event
   document.dispatchEvent(event);
 }

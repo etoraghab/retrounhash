@@ -19,7 +19,6 @@ export async function getUserData(pub) {
                 res(userdata)
             })
         } catch (e) {
-            console.log(e);
             rej(e)
         }
     })
