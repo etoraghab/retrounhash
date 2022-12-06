@@ -1,5 +1,4 @@
 <script>
-  import { v4 } from "uuid";
   import Highlight from "../components/highlight.svelte";
   import { db, keys, user, username } from "../lib/gun";
 
@@ -25,7 +24,7 @@
 
 <div class="p-3">
   <div class="flex justify-center flex-col gap-3">
-    <div class="flex overflow-x-scroll">
+    <div class="flex overflow-x-scroll w-full md:w-1/2 lg:w-1/3 m-auto">
       <Highlight
         person={{
           name: username,
