@@ -1,6 +1,6 @@
 import GUN from "gun";
 import "gun/sea";
-// import "gun/axe";
+import "gun/axe";
 import "gun/lib/radix";
 import "gun/lib/radisk";
 import "gun/lib/store";
@@ -11,7 +11,7 @@ import { writable } from "svelte/store";
 export const db = GUN({
   peers: [
     "https://gun-ams1.cl0vr.co/gun",
-    "http://localhost:8765/gun",
+    // "https://gun-manhattan.herokuapp.com/gun"
   ],
   localStorage: false,
 });
