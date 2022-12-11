@@ -397,7 +397,7 @@
               />
               <div class="flex flex-col items-start">
                 <span class="text-md">
-                  {dminfo.displayName}
+                  {dminfo.displayName || dminfo.name}
                 </span>
                 <span class="text-xs">
                   @{dminfo.name}
