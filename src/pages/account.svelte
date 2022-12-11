@@ -2,7 +2,7 @@
   import Post from "../components/post.svelte";
   import { db, keys, user, username as username_ } from "../lib/gun";
   import { location, push } from "svelte-spa-router";
-  import { DotsVerticalRounded } from "@svicons/boxicons-regular";
+  import { DotsVerticalRounded, Message, MessageAdd } from "@svicons/boxicons-regular";
   import Highlight from "../components/highlight.svelte";
   import { getUserData } from "../lib/utils";
   require("@tensorflow/tfjs");
@@ -224,22 +224,35 @@
             follow
           </button>
         {:else}
-          <button
-            on:click={async () => {
-              await user.get("following").get(pub).put(false);
-              user_graph
-                .get("followers")
-                .get($keys.pub)
-                .put(false, null, {
-                  opt: {
-                    cert: certificate,
-                  },
-                });
-            }}
-            class="btn btn-wide btn-xs btn-ghost"
-          >
-            unfollow
-          </button>
+          <div class="flex gap-2">
+            <button
+              on:click={async () => {
+                await user.get("following").get(pub).put(false);
+                user_graph
+                  .get("followers")
+                  .get($keys.pub)
+                  .put(false, null, {
+                    opt: {
+                      cert: certificate,
+                    },
+                  });
+              }}
+              class="btn btn-xs btn-ghost"
+            >
+              unfollow
+            </button>
+            <button
+              class="btn btn-xs btn-primary flex gap-1"
+              on:click={() => {
+                push(`/friends/${pub}`);
+              }}
+            >
+            <Message width="1.3em" />
+              <span>
+                message
+              </span>
+            </button>
+          </div>
         {/if}
       {/if}
     </div>

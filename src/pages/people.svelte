@@ -13,7 +13,6 @@
     if (val == true && pub_f !== pub) {
       // let highlight_user_graph = db.user(pub_f);
       await getUserData(pub_f).then((data) => {
-        console.log(data);
         person = [
           {
             pub: pub_f,
