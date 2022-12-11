@@ -1,6 +1,6 @@
 <script>
   import { ChevronRight } from "@svicons/boxicons-regular";
-  import { link } from "svelte-spa-router";
+  import { link, push } from "svelte-spa-router";
   import Highlight from "../components/highlight.svelte";
   import { db, keys, user, username } from "../lib/gun";
   import { getUserData } from "../lib/utils";
@@ -46,6 +46,20 @@
 </div>
 
 <div class="p-3 w-full md:w-1/2 lg:w-1/3 m-auto">
+  <div class="text-xl mb-2">chats <sub class="text-xs">(beta)</sub></div>
+  {#if person.length == 0}
+    <button
+      class="text-xs text-opacity-50 p-2 underline"
+      on:click={() => {
+        let pub = prompt("enter user pubkey, or follow the user manually");
+        if (pub) {
+          push(`/friends/${pub}`);
+        }
+      }}
+    >
+      start a convo
+    </button>
+  {/if}
   {#each person as p}
     <div
       class="rounded-full h-10 mb-2 border hover:shadow cursor-pointer transition-all duration-300 border-gray-600 border-opacity-40 flex p-1 items-center"

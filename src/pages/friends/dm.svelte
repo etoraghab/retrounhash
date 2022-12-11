@@ -24,12 +24,11 @@
     .get("dm")
     .get($keys.pub)
     .map()
-    .once((a, b) => {
-
+    .once((data, b) => {
       messages = [
         {
-          message: a.message,
-          time: Gun.state.is(a, "message"),
+          message: data['message'],
+          time: Gun.state.is(data, "message"),
           self: false,
         },
         ...messages,
