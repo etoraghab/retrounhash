@@ -57,6 +57,9 @@
       "/friends": wrap({
         asyncComponent: () => import("./pages/people.svelte"),
       }),
+      "/friends/:pub": wrap({
+        asyncComponent: () => import("./pages/friends/dm.svelte"),
+      }),
       "/following/:pub": wrap({
         asyncComponent: () => import("./pages/following.svelte"),
       }),

@@ -18,6 +18,8 @@
     Camera,
     PhoneCall,
     VideoRecording,
+    Send,
+    ArrowBack,
   } from "@svicons/boxicons-regular";
   import { reveal } from "svelte-reveal";
   import { v4 } from "uuid";
@@ -327,6 +329,31 @@
           });
       });
   });
+
+  let message,
+    dminfo = {
+      bio: "",
+      displayName: "",
+      img: "",
+      name: "",
+      pub: "",
+    };
+  location.subscribe(async (loc) => {
+    if (loc.match(/friends\/[a-zA-Z]/)) {
+      let person_pub = loc.replace(/\/friends\/(.*)/, "$1");
+      await getUserData(person_pub).then((data) => {
+        dminfo = data;
+        dminfo.pub = person_pub;
+      });
+    }
+  });
+
+  async function sendMessage() {
+    await user.get("dm").get(dminfo.pub).get(new Date().toISOString()).put({
+      message: message,
+    });
+    message = undefined;
+  }
 </script>
 
 <div class="flex justify-center items-center w-full header__">
@@ -338,79 +365,112 @@
       style="transition:all .5s;height: {height_header}rem;display: flex;flex-direction: column;margin: 0.75rem;border-radius: {border_header}px;"
     >
       <div
-        class=" p-2 flex header__ border border-blue-600 border-opacity-40 transition-all duration-400 backdrop-blur-sm rounded-full 
+        class="p-2 flex header__ border border-blue-600 border-opacity-40 transition-all duration-400 backdrop-blur-sm rounded-full 
         {writeMode || profileEditMode || settingsOpen == false
           ? 'bg-base-100'
           : ''} bg-opacity-80"
       >
-        {#if $location.includes("/search") || $location.includes("/explore")}
-          <input
-            type="text"
-            id="search"
-            bind:this={searchElm}
-            class="w-full bg-transparent pl-3 text-sm rounded-full p-1"
-            placeholder="search among hashtags, posts"
-            bind:value={searchQuery}
-          />
-          <button
-            on:click={() => {
-              push(`/search/${searchQuery}`);
-            }}
-            class="m-auto mr-1 p-0.5 rounded-full bg-base-100 bg-opacity-10"
-          >
-            <Search width="1.2em" />
-          </button>
-        {:else}
-          <div
-            class="m-auto flex ml-1 p-1 rounded-full bg-base-100 bg-opacity-10"
-          >
+        {#if $location.match(/friends\/[a-zA-Z]/)}
+          <div class="flex gap-1 justify-center items-center h-9">
             <button
-              class="m-auto"
-              on:click={openSettings}
-              aria-label="Settings"
+              on:click={() => {
+                history.back();
+              }}
+              class="btn btn-xs h-9 w-9 rounded-full btn-ghost border transition-all duration-300 border-blue-600 hover:bg-blue-600 hover:bg-opacity-90 hover:text-white hover:text-opacity-90 border-opacity-30 focus:border-opacity-90"
             >
-              <Cog width="1.2em" />
+              <ArrowBack width="1.6em" />
+            </button>
+            <button
+              class="flex gap-1 justify-center items-center"
+              on:click={() => {
+                push(`/u/${dminfo.pub}`);
+              }}
+            >
+              <img
+                src={dminfo.img}
+                class="h-9 w-9 object-cover rounded-full"
+                alt=""
+              />
+              <div class="flex flex-col items-start">
+                <span class="text-md">
+                  {dminfo.displayName}
+                </span>
+                <span class="text-xs">
+                  @{dminfo.name}
+                </span>
+              </div>
             </button>
           </div>
-          <button
-            class="text-xl m-auto ml-3 mr-0 mb-auto cursor-pointer"
-            on:click={() => {
-              push("/");
-            }}
-          >
-            retrounhash
-          </button>
-        {/if}
-
-        {#if $location == `/u/${$keys.pub}`}
-          <button
-            on:click={editProfile}
-            class="m-auto mr-1 p-1 rounded-full bg-base-100 bg-opacity-10"
-          >
-            <Edit width="1.2em" />
-          </button>
-        {:else if $location.includes("/u/")}
-          <Clipboard
-            text={window.location.href}
-            let:copy
-            on:copy={() => {
-              toast("success", "copied");
-            }}
-          >
+        {:else}
+          {#if $location.includes("/search") || $location.includes("/explore")}
+            <input
+              type="text"
+              id="search"
+              bind:this={searchElm}
+              class="w-full bg-transparent pl-3 text-sm rounded-full p-1"
+              placeholder="search among hashtags, posts"
+              bind:value={searchQuery}
+            />
             <button
-              on:click={copy}
+              on:click={() => {
+                push(`/search/${searchQuery}`);
+              }}
+              class="m-auto mr-1 p-0.5 rounded-full bg-base-100 bg-opacity-10"
+            >
+              <Search width="1.2em" />
+            </button>
+          {:else}
+            <div
+              class="m-auto flex ml-1 p-1 rounded-full bg-base-100 bg-opacity-10"
+            >
+              <button
+                class="m-auto"
+                on:click={openSettings}
+                aria-label="Settings"
+              >
+                <Cog width="1.2em" />
+              </button>
+            </div>
+            <button
+              class="text-xl m-auto ml-3 mr-0 mb-auto cursor-pointer"
+              on:click={() => {
+                push("/");
+              }}
+            >
+              retrounhash
+            </button>
+          {/if}
+
+          {#if $location == `/u/${$keys.pub}`}
+            <button
+              on:click={editProfile}
               class="m-auto mr-1 p-1 rounded-full bg-base-100 bg-opacity-10"
             >
-              <ShareAlt width="1.2em" />
+              <Edit width="1.2em" />
             </button>
-          </Clipboard>
-        {:else if $location !== "/explore" && !$location.includes("/search")}
-          <button
-            on:click={writePost}
-            class="m-auto mr-1 p-1 rounded-full bg-base-100 bg-opacity-10"
-          >
-            <Pencil width="1.2em" />
-          </button>
+          {:else if $location.includes("/u/")}
+            <Clipboard
+              text={window.location.href}
+              let:copy
+              on:copy={() => {
+                toast("success", "copied");
+              }}
+            >
+              <button
+                on:click={copy}
+                class="m-auto mr-1 p-1 rounded-full bg-base-100 bg-opacity-10"
+              >
+                <ShareAlt width="1.2em" />
+              </button>
+            </Clipboard>
+          {:else if $location !== "/explore" && !$location.includes("/search")}
+            <button
+              on:click={writePost}
+              class="m-auto mr-1 p-1 rounded-full bg-base-100 bg-opacity-10"
+            >
+              <Pencil width="1.2em" />
+            </button>
+          {/if}
         {/if}
       </div>
       {#if writeMode}
@@ -634,6 +694,30 @@
             </div>
           </div>
         </div>
+      </div>
+    </div>
+  {:else if $location.match(/friends\/[a-zA-Z]/)}
+    <div class="w-full md:w-1/2 lg:w-1/3 h-auto fixed bottom-0 gap-2 ">
+      <div
+        class="m-2 border border-blue-700 border-opacity-40 p-1 flex backdrop-blur-sm rounded-md bg-base-100 bg-opacity-80 justify-center items-center"
+      >
+        <form
+          autocomplete="off"
+          on:submit|preventDefault={sendMessage}
+          class="flex w-full"
+        >
+          <input
+            bind:value={message}
+            type="text"
+            placeholder="type a message.."
+            class="w-full input input-ghost rounded-sm input-xs"
+          />
+          <button
+            class="btn btn-xs btn-ghost border transition-all duration-300 border-blue-600 hover:bg-blue-600 hover:bg-opacity-90 hover:text-white hover:text-opacity-90 border-opacity-30 focus:border-opacity-90"
+          >
+            <Send width="1.3em" />
+          </button>
+        </form>
       </div>
     </div>
   {:else}
