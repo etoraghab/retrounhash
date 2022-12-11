@@ -55,16 +55,16 @@ module.exports = {
     new MiniCssExtractPlugin({
       filename: "[name].css",
     }),
-    /*new BrotliPlugin({
+    new BrotliPlugin({
       asset: "[path].br[query]",
       test: /\.(js|css|html|svg)$/,
       threshold: 10240,
       minRatio: 0.7,
-    }),*/
+    }),
   ],
   optimization: {
-    /*minimize: true,
-    minimizer: [new TerserPlugin(), new CssMinimizerPlugin()],*/
+    minimize: true,
+    minimizer: [new TerserPlugin(), new CssMinimizerPlugin()],
   },
 
   devtool: prod ? false : "source-map",
