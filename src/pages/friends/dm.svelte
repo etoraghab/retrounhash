@@ -27,7 +27,7 @@
     .once((data, b) => {
       messages = [
         {
-          message: data['message'],
+          message: data["message"],
           time: Gun.state.is(data, "message"),
           self: false,
         },

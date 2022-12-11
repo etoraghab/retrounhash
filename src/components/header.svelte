@@ -349,11 +349,7 @@
   });
 
   async function sendMessage() {
-    await user
-    .get("dm")
-    .get(dminfo.pub)
-    .get(new Date().toISOString())
-    .put({
+    await user.get("dm").get(dminfo.pub).get(new Date().toISOString()).put({
       message: message,
     });
     message = undefined;

@@ -86,7 +86,9 @@
             <div class="flex w-full">
               <div class="text-md truncate">@{f.username}</div>
             </div>
-            <div class="text-xs flex gap-0.5 max-h-11 overflow-scroll flex-wrap">
+            <div
+              class="text-xs flex gap-0.5 max-h-11 overflow-scroll flex-wrap"
+            >
               {@html parse(f.bio)}
             </div>
           </div>
